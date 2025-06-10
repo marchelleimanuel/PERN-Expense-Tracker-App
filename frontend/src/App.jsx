@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import Route from './routes/route';
 
 function App() {
   return (
-    <>
-      <p className='border-2 border-red-500 text-9xl'>tes</p>
-    </>
+    <BrowserRouter>
+      <Route/>
+    </BrowserRouter>
   )
 }
 
-export default App
+export default App;
