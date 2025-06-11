@@ -23,7 +23,8 @@ const User = db.define('User',
         }
     },
     {
-        tableName: "app_user"
+        tableName: "app_user",
+        modelName: 'users'
     }
 );
 

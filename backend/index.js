@@ -2,13 +2,16 @@ import express from 'express';
 import dotenv from 'dotenv';
 import router from './routes/route.js';
 import db from './database/database.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 const port = process.env.APP_PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 app.use(router)
+
 
 try {
     await db.authenticate();
