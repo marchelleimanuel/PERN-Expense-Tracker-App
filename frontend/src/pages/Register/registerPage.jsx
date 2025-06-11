@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
+import registerService from '../../services/Register/registerService'
 
 const Register = () => {
     const navigate = useNavigate();
@@ -8,8 +9,17 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword , setConfirmPassword] = useState('');
 
-    const register = (username, email, password, confirmPassword) => {
+    const register = () => {
         
+        registerService(username, email, password, confirmPassword)
+        .then(response => {
+            console.log('ini baru berhasil: ', response);
+        })
+        .catch(response => {
+            console.log(response.response.data.message);
+        })
+        
+        // console.log('ini responsenya: ', response.response.data);
 
         // navigate('/login')
     }
@@ -30,7 +40,6 @@ const Register = () => {
         setConfirmPassword(e.target.value)
     }
 
-    
     return (
         <div className="flex justify-center items-center h-screen">  
             <div>
@@ -51,7 +60,7 @@ const Register = () => {
                     <p>Confirm Password</p>
                     <input type="text" className="border-2 border-black" onChange={changeConfirmPassword}/>
                 </div>
-                <button className="cursor-pointer border-2 border-black" onClick={register(username, email, password, confirmPassword)}>Register</button>
+                <button className="cursor-pointer border-2 border-black" onClick={register}>Register</button>
             </div>
         </div>
     )
