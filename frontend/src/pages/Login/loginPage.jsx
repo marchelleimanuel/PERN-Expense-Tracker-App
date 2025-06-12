@@ -1,66 +1,48 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginService from "../../services/Login/loginService";
 
 
 const Login = () => {
     const navigate = useNavigate();
-    const [username , setUsername] = useState('');
-    const [email , setEmail] = useState('');
+    const [emailOrUsername , setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword , setConfirmPassword] = useState('');
 
-    const register = async () => {
-        
-        const response = await registerService(username, email, password, confirmPassword)
+    const login = async () => {
+        const response = await LoginService(emailOrUsername, password)
         
         if(response.response_code === 'SUCCESS') {
-            navigate('/login')
+            navigate('/home')
         }
     }
 
-    const goToLoginPage = () => {
-        navigate('/login')
-    }
-    
-    const changeUsername = e => {
-        setUsername(e.target.value)
+    const goToRegisterPage = () => {
+        navigate('/register')
     }
 
-    const changeEmail = e => {
-        setEmail(e.target.value)
+    const changeEmailOrUsername = e => {
+        setEmailOrUsername(e.target.value)
     }
 
     const changePassword = e => {
         setPassword(e.target.value)
     }
 
-    const changeConfirmPassword = e => {
-        setConfirmPassword(e.target.value)
-    }
-
     return (
         <div className="flex justify-center items-center h-screen">  
             <div>
-                <h1 className="text-4xl font-bold">Register</h1>
+                <h1 className="text-4xl font-bold">Login</h1>
                 <div className="">
-                    <p>Username</p>
-                    <input type="text" className="border-2 border-black" onChange={changeUsername}/>
-                </div>
-                <div className="">
-                    <p>Email</p>
-                    <input type="email" className="border-2 border-black" onChange={changeEmail}/>
+                    <p>Email/Username</p>
+                    <input type="text" className="border-2 border-black" onChange={changeEmailOrUsername}/>
                 </div>
                 <div className="">
                     <p>Password</p>
                     <input type="password" className="border-2 border-black" onChange={changePassword}/>
                 </div>
-                <div className="">
-                    <p>Confirm Password</p>
-                    <input type="password" className="border-2 border-black" onChange={changeConfirmPassword}/>
-                </div>
-                <button className="cursor-pointer border-2 border-black" onClick={register}>Register</button>
+                <button className="cursor-pointer border-2 border-black" onClick={login}>Login</button>
                 <div>
-                    <p className="cursor-pointer" onClick={goToLoginPage}>Already have an account?</p>
+                    <p className="cursor-pointer" onClick={goToRegisterPage}>Create an account</p>
                 </div>
             </div>
         </div>

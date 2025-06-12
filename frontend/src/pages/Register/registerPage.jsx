@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import registerService from '../../services/Register/registerService'
+import RegisterService from '../../services/Register/registerService'
 
 const Register = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Register = () => {
 
     const register = async () => {
         
-        const response = await registerService(username, email, password, confirmPassword)
+        const response = await RegisterService(username, email, password, confirmPassword)
         
         if(response.response_code === 'SUCCESS') {
             navigate('/login')

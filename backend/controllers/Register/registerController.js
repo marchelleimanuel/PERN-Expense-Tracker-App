@@ -1,8 +1,9 @@
 import { Op } from "sequelize";
 import User from "../../models/User/userModel.js"
 import bycryptjs from 'bcryptjs';
+import { SUCCESS_CODE } from "../../common/common.js";
 
-const userController = async (req, res) => {
+const RegisterController = async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
 
     const user = await User.findOne({
@@ -37,10 +38,10 @@ const userController = async (req, res) => {
 
     res.status(201).json({
         message: 'User created successfully!',
-        response_code: 'SUCCESS'
+        response_code: SUCCESS_CODE
     });
 }
 
-export default userController
+export default RegisterController
 
 
