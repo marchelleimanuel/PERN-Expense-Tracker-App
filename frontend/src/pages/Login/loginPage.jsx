@@ -42,7 +42,7 @@ const Login = () => {
                 </div>
                 <button className="cursor-pointer border-2 border-black" onClick={login}>Login</button>
                 <div>
-                    <p className="cursor-pointer" onClick={goToRegisterPage}>Create an account</p>
+                    <p className="cursor-pointer" onClick={goToRegisterPage}>I don't have an account</p>
                 </div>
             </div>
         </div>
