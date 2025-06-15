@@ -18,15 +18,14 @@ const Sidebar = () => {
         if(menuName === 'Finance Report') navigate('/report')
     }
 
-    const logos = ['logo','logo','logo'];
-    const menuName = ['Home', 'Input', 'Finance Report'];
+    const logos = ['logo','logo','logo', 'logo'];
+    const menuName = ['Home', 'Input', 'Finance Report', 'Logout'];
 
     return (
         <div className="inline-block h-screen w-56 border-2 border-black">
             {
                 logos.map((logo, i) => {
                     const menu = menuName[i];
-                    // return menus(logo, menu, onMenuClicked(menu))
                     return menus(logo, menu, i);
                 })
             } 
