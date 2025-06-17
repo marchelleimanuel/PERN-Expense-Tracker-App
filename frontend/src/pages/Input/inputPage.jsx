@@ -1,53 +1,89 @@
+import { useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar"
 import { Dropdown } from 'primereact/dropdown';
 
 const Input = () => {
+    const [selectedType, setSelectedType] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [amount, setAmount] = useState(0);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [notes, setNotes] = useState('');
 
-    const onClickRadio = (e) => {
-        // e.stopPropagation();
-        console.log(e.target.value)
+    const categories = [
+        'Food & Beverages',
+        'Halo',
+        'Halo2',
+        'Halo3',
+        'Halo4',
+        'Halo5',
+    ]
+
+    const onSelectRadio = (e) => {
+        setSelectedType(e.target.value);
+    }
+
+    const onSelectCategory = (e) => {
+        setSelectedCategory(e.target.value);
+    }
+
+    const onInputAmount = (e) => {
+        // Inputnya masih bisa huruf.. harusnya angka doang
+        setAmount(e.target.value);
+    }
+
+    const onSelectDate = (e) => {
+        setSelectedDate(e.target.value);
+    }
+
+    const onInputNotes = (e) => {
+        setNotes(e.target.value);
     }
 
     return (
-        <div className="flex">
+        <div className="flex"> 
             <Sidebar/>
-            <div className="border-2 border-red-500 w-[87%] p-10">
-                <div className="w-1/2">
-                    <p>Type</p>
-                    <label onChange={onClickRadio}>
-                        <input type="radio" value={'Income'} name="options"/>
-                        Income
-                    </label>
-                    <label onChange={onClickRadio}>
-                        <input type="radio" value={'Expense'} name="options"/>
-                        Expense
-                    </label>
-                </div>
+            <div className="w-[87%] p-10">
+                <fieldset className="w-1/2 fieldset">
+                    <legend className="fieldset-legend">Type</legend>
+                    <div>
+                        <label onChange={onSelectRadio} >
+                            <input type="radio" name="options" className="radio radio-xs" value={'Income'}/>
+                            Income
+                        </label>
+                        <label onChange={onSelectRadio} className="ml-5">
+                            <input type="radio" name="options" className="radio radio-xs" value={'Expense'}/>
+                            Expense
+                        </label>
+                    </div>
+                </fieldset>
                 {/* dropdown */}
-                
-                <div>
-                    <p>Category</p>
-                    <input type="text" className="border-2 border-black w-1/2" />
-                </div>
-
+                <fieldset className="fieldset">
+                    <legend className="fieldset-legend">Category</legend>
+                    <select defaultValue="Pick a category" className="select" onChange={onSelectCategory}>
+                        <option disabled={true}>Pick a category</option>
+                        {categories.map((category, index) => {
+                            return <option key={index}>{category}</option>
+                        })}
+                    </select>
+                </fieldset>
                 {/* input biasa */}
-                <div>
-                    <p>Amount</p>
-                    <input type="text" className="border-2 border-black w-1/2" />
-                </div>
+                <fieldset className="fieldset">
+                    <legend className="fieldset-legend">Amount</legend>
+                    <input type="input" className="input" onChange={onInputAmount}/> 
+                </fieldset>
 
                 {/* Date picker */}
-                <div>
-                    <p>Date</p>
-                    <input type="text" className="border-2 border-black w-1/2" />
-                </div>
+                <fieldset className="fieldset">
+                    <legend className="fieldset-legend">Date</legend>
+                    <input type="date" className="input" onChange={onSelectDate}/> 
+                </fieldset>
 
                 {/* Areatext */}
-                <div>
-                    <p>Notes</p>
-                    <input type="text" className="border-2 border-black w-1/2" />
-                </div>
-                <button className="border-2 border-black">Submit</button>
+                <fieldset className="fieldset">
+                    <legend className="fieldset-legend">Notes (Optional)</legend>
+                    <textarea className="textarea h-24" placeholder="Notes" onChange={onInputNotes}></textarea>
+                </fieldset>
+                <button className="border-2 border-black btn">Submit</button>
             </div>
         </div>
     )
