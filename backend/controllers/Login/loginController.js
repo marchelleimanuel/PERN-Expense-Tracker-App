@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import User from '../../models/User/userModel.js';
 import bcryptjs from 'bcryptjs';
-import { SUCCESS_CODE } from '../../common/common.js';
+import { FAILED_CODE, SUCCESS_CODE } from '../../common/common.js';
 
 const LoginController = async (req, res) => {
     const {emailOrUsername, password} = req.body;
@@ -15,12 +15,18 @@ const LoginController = async (req, res) => {
         }
     })
 
-    if(!user) return res.status(404).json({message: 'Username/Email doesn\'t exist' });
+    if(!user) return res.status(404).json({
+        response_code: FAILED_CODE,
+        message: 'Username/Email doesn\'t exist' 
+    });
     
     const isPasswordMatch = await bcryptjs.compare(password, user.password);
-    if(!isPasswordMatch) return res.status(404).json({message: 'Invalid Password' });
+    if(!isPasswordMatch) return res.status(404).json({
+        response_code: FAILED_CODE,
+        message: 'Invalid Password' 
+    });
 
-    return res.status(201).json({
+    return res.status(200).json({
         response_code: SUCCESS_CODE,
         message: 'Login Success'
     })

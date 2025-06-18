@@ -7,17 +7,32 @@ const Login = () => {
     const navigate = useNavigate();
     const [emailOrUsername , setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState({
+        message: '',
+        typeError: ''
+    });
 
     const login = async () => {
-        const response = await LoginService(emailOrUsername, password)
-        
-        if(response.response_code === 'SUCCESS') {
-            navigate('/home')
+        try {
+            const response = await LoginService(emailOrUsername, password)
+            
+            if(response.response_code === 'SUCCESS') {
+                navigate('/home')
+            }
+        } catch (err) {
+            const error = err.response.data.message;
+            error.includes('Username/Email') ? setErrorMessage({message:error, typeError:'username/email'}) : setErrorMessage({message:error, typeError:'password'})
         }
     }
 
     const goToRegisterPage = () => {
         navigate('/register')
+    }
+
+    const onEnter = (e) => {
+        if (e.key === 'Enter' && emailOrUsername !== '' && password !== '') {
+            login();
+        }
     }
 
     const changeEmailOrUsername = e => {
@@ -29,22 +44,25 @@ const Login = () => {
     }
 
     return (
+        
         <div className="flex justify-center items-center h-screen">  
-            <div>
-                <h1 className="text-4xl font-bold">Login</h1>
-                <div className="">
-                    <p>Email/Username</p>
-                    <input type="text" className="border-2 border-black" onChange={changeEmailOrUsername}/>
-                </div>
-                <div className="">
-                    <p>Password</p>
-                    <input type="password" className="border-2 border-black" onChange={changePassword}/>
-                </div>
-                <button className="cursor-pointer border-2 border-black" onClick={login}>Login</button>
+            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+                <legend className="fieldset-legend text-2xl">Login</legend>
+
+                <label className="label">Email/Username</label>
+                <input type="email" className="input" placeholder="Email/Username" onChange={changeEmailOrUsername} onKeyDown={onEnter} />
+                {errorMessage.typeError === 'username/email' ? <p className="text-red-500">{errorMessage.message}</p> : ''}
+                
+
+                <label className="label">Password</label>
+                <input type="password" className="input" placeholder="Password" onChange={changePassword} onKeyDown={onEnter} />
+                {errorMessage.typeError === 'password' ? <p className="text-red-500">{errorMessage.message}</p> : ''}
+
+                <button className="btn btn-neutral mt-4" disabled={emailOrUsername === '' || password === '' } onClick={login}>Login</button>
                 <div>
-                    <p className="cursor-pointer" onClick={goToRegisterPage}>I don't have an account</p>
+                    <p className="cursor-pointer text-right text-sm" onClick={goToRegisterPage}>I don't have an account</p>
                 </div>
-            </div>
+            </fieldset>
         </div>
     )
 }
