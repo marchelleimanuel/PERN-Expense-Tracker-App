@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar"
 import { Dropdown } from 'primereact/dropdown';
+import { getCategory } from "../../services/Input/inputService";
 
 const Input = () => {
     const [selectedType, setSelectedType] = useState('');
@@ -8,15 +9,22 @@ const Input = () => {
     const [amount, setAmount] = useState(0);
     const [selectedDate, setSelectedDate] = useState(null);
     const [notes, setNotes] = useState('');
+    const [categories, setCategories] = useState([]);
+    
+        const getDataCategory = async () => {
+            try {
+                const response = await getCategory();
+                if(response.response_code === 'SUCCESS') {
+                    setCategories(response.data);
+                }
+            } catch (error) {
+                
+            }
+        }
 
-    const categories = [
-        'Food & Beverages',
-        'Halo',
-        'Halo2',
-        'Halo3',
-        'Halo4',
-        'Halo5',
-    ]
+    useEffect(() => {
+        getDataCategory();
+    },[categories])
 
     const onSelectRadio = (e) => {
         setSelectedType(e.target.value);
@@ -62,7 +70,7 @@ const Input = () => {
                     <select defaultValue="Pick a category" className="select" onChange={onSelectCategory}>
                         <option disabled={true}>Pick a category</option>
                         {categories.map((category, index) => {
-                            return <option key={index}>{category}</option>
+                            return <option key={index}>{category.category_name}</option>
                         })}
                     </select>
                 </fieldset>

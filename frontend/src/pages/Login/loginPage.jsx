@@ -51,16 +51,16 @@ const Login = () => {
 
                 <label className="label">Email/Username</label>
                 <input type="email" className="input" placeholder="Email/Username" onChange={changeEmailOrUsername} onKeyDown={onEnter} />
-                {errorMessage.typeError === 'username/email' ? <p className="text-red-500">{errorMessage.message}</p> : ''}
                 
-
                 <label className="label">Password</label>
                 <input type="password" className="input" placeholder="Password" onChange={changePassword} onKeyDown={onEnter} />
+
+                {errorMessage.typeError === 'username/email' ? <p className="text-red-500">{errorMessage.message}</p> : ''}
                 {errorMessage.typeError === 'password' ? <p className="text-red-500">{errorMessage.message}</p> : ''}
 
                 <button className="btn btn-neutral mt-4" disabled={emailOrUsername === '' || password === '' } onClick={login}>Login</button>
                 <div>
-                    <p className="cursor-pointer text-right text-sm" onClick={goToRegisterPage}>I don't have an account</p>
+                    <p className="cursor-pointer text-center text-sm" onClick={goToRegisterPage}>I don't have an account</p>
                 </div>
             </fieldset>
         </div>
