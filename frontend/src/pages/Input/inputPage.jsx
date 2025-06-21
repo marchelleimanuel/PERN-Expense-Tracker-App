@@ -1,32 +1,52 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar"
 import { Dropdown } from 'primereact/dropdown';
-import { getCategory } from "../../services/Input/inputService";
+import { getCategory, postTransaction } from "../../services/Input/inputService";
 
 const Input = () => {
     const [selectedType, setSelectedType] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [amount, setAmount] = useState(0);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState('Pick a category');
+    const [amount, setAmount] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
     const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
     
-        const getDataCategory = async () => {
-            try {
-                const response = await getCategory();
-                if(response.response_code === 'SUCCESS') {
-                    setCategories(response.data);
-                }
-            } catch (error) {
-                
+    const getDataCategory = async () => {
+        try {
+            const response = await getCategory();
+            if(response.response_code === 'SUCCESS') {
+                setCategories(response.data);
             }
+        } catch (error) {
+            
+        }
+    }
+
+    const onClickSubmit = async () => {
+
+        const data = {
+            type: selectedType ? selectedType : '',
+            category: selectedCategory === 'Pick a category' ? '' : selectedCategory,
+            amount: amount ? amount : '',
+            date: selectedDate ? selectedDate : '',
+            notes: notes ? notes : ''
         }
 
-    useEffect(() => {
+        try {
+            const response = await postTransaction(data);
+            console.log('ini data transaction:  ', response.data);
+            reset();
+        } catch (error) {
+            
+        }
+    }
+
+    useEffect(() => {        
         getDataCategory();
-    },[categories])
+    },[])
 
     const onSelectRadio = (e) => {
+        console.log(e.target.value)
         setSelectedType(e.target.value);
     }
 
@@ -47,6 +67,14 @@ const Input = () => {
         setNotes(e.target.value);
     }
 
+    const reset = () => {
+        setSelectedType('');
+        setSelectedCategory('Pick a category');
+        setAmount('');
+        setSelectedDate('');
+        setNotes('');
+    }
+
     return (
         <div className="flex"> 
             <Sidebar/>
@@ -54,12 +82,12 @@ const Input = () => {
                 <fieldset className="w-1/2 fieldset">
                     <legend className="fieldset-legend">Type</legend>
                     <div>
-                        <label onChange={onSelectRadio} >
-                            <input type="radio" name="options" className="radio radio-xs" value={'Income'}/>
+                        <label>
+                            <input type="radio" name="options" onChange={onSelectRadio} checked={selectedType === 'Income' ? true : false} className="radio radio-xs" value={'Income'}/>
                             Income
                         </label>
-                        <label onChange={onSelectRadio} className="ml-5">
-                            <input type="radio" name="options" className="radio radio-xs" value={'Expense'}/>
+                        <label  className="ml-5">
+                            <input type="radio" name="options"  onChange={onSelectRadio} checked={selectedType === 'Expense'  ? true : false} className="radio radio-xs" value={'Expense'}/>
                             Expense
                         </label>
                     </div>
@@ -67,8 +95,8 @@ const Input = () => {
                 {/* dropdown */}
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Category</legend>
-                    <select defaultValue="Pick a category" className="select" onChange={onSelectCategory}>
-                        <option disabled={true}>Pick a category</option>
+                    <select value={selectedCategory} className="select" onChange={onSelectCategory}>
+                        <option disabled>Pick a category</option>
                         {categories.map((category, index) => {
                             return <option key={index}>{category.category_name}</option>
                         })}
@@ -77,21 +105,21 @@ const Input = () => {
                 {/* input biasa */}
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Amount</legend>
-                    <input type="input" className="input" onChange={onInputAmount}/> 
+                    <input type="input" value={amount} className="input" onChange={onInputAmount}/> 
                 </fieldset>
 
                 {/* Date picker */}
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Date</legend>
-                    <input type="date" className="input" onChange={onSelectDate}/> 
+                    <input type="date" className="input" value={selectedDate} onChange={onSelectDate}/> 
                 </fieldset>
 
                 {/* Areatext */}
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Notes (Optional)</legend>
-                    <textarea className="textarea h-24" placeholder="Notes" onChange={onInputNotes}></textarea>
+                    <textarea className="textarea h-24" placeholder="Notes" value={notes} onChange={onInputNotes}></textarea>
                 </fieldset>
-                <button className="border-2 border-black btn">Submit</button>
+                <button className="border-2 border-black btn" onClick={onClickSubmit}>Submit</button>
             </div>
         </div>
     )
