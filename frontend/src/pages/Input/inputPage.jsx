@@ -37,7 +37,7 @@ const Input = () => {
             console.log('ini data transaction:  ', response.data);
             reset();
         } catch (error) {
-            
+            console.log(error.response.data.message);
         }
     }
 

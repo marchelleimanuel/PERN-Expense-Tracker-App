@@ -1,23 +1,23 @@
 import { DataTypes } from "sequelize";
 import db from "../../database/database.js";
 
-const Category = db.define('Category', 
+const IncomeCategory = db.define('IncomeCategory', 
     {
-        id_category: {
+        income_category_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
             autoIncrement: true
         },
-        category_name: {
+        income_category_name: {
             type: DataTypes.STRING,
             allowNull: false
         },
     },
     {
-        tableName: "category",
-        modelName: 'category'
+        tableName: "income_category",
+        modelName: 'income_category'
     }
 );
 
-export default Category;
+export default IncomeCategory;
