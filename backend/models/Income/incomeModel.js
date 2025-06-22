@@ -14,6 +14,7 @@ const Income = db.define('Income', {
     {
         tableName: "income",
         modelName: "income",
+        timestamps: false
     }
 );
 
@@ -22,6 +23,5 @@ IncomeCategory.hasMany(Income, {
         name: 'income_category_id'
     }
 })
-Income.belongsTo(IncomeCategory);
 
 export default Income;

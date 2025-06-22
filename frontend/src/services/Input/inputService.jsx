@@ -1,10 +1,10 @@
 import axios from "axios";
 import { BASE_URL, INPUT_GET_CATEGORY_URL, INPUT_POST_TRANSACTION_URL } from "../../routes/urlPath";
 
-export const getCategory = async () => {
+export const getCategory = async (type) => {
     const response = await axios({
         method: 'get',
-        url: BASE_URL + INPUT_GET_CATEGORY_URL
+        url: BASE_URL + INPUT_GET_CATEGORY_URL + `-${type.toLowerCase()}`
     })
 
     const { data } = response;

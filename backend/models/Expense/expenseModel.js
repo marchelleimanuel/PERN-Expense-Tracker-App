@@ -14,6 +14,7 @@ const Expense = db.define('Expense', {
     {
         tableName: "expense",
         modelName: "expense",
+        timestamps: false
     }
 );
 
@@ -22,6 +23,5 @@ ExpenseCategory.hasMany(Expense, {
         name: 'expense_category_id'
     }
 })
-Expense.belongsTo(ExpenseCategory);
 
 export default Expense;

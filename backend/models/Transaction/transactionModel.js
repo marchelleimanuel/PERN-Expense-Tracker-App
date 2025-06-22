@@ -20,7 +20,7 @@ const Transaction = db.define('Transaction',
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        data: {
+        date: {
             type: DataTypes.DATE,
             allowNull: false
         },
@@ -41,21 +41,21 @@ User.hasMany(Transaction, {
     type: DataTypes.INTEGER,
     allowNull: false
 });
-Transaction.belongsTo(User);
+// Transaction.belongsTo(User);
 
 Expense.hasMany(Transaction, {
     foreignKey: 'id_expense',
     type: DataTypes.INTEGER,
     allowNull: true
 }); 
-Transaction.belongsTo(Expense);
+// Transaction.belongsTo(Expense);
 
 Income.hasMany(Transaction, {
     foreignKey: 'id_income',
     type: DataTypes.INTEGER,
     allowNull: true
 }); 
-Transaction.belongsTo(Income);
+// Transaction.belongsTo(Income);
 
 
 export default Transaction;

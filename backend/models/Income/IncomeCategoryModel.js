@@ -16,7 +16,8 @@ const IncomeCategory = db.define('IncomeCategory',
     },
     {
         tableName: "income_category",
-        modelName: 'income_category'
+        modelName: 'income_category',
+        timestamps: false
     }
 );
 

@@ -10,10 +10,11 @@ const Input = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
+    const whichType = selectedType.toLowerCase()+"_";
     
     const getDataCategory = async () => {
         try {
-            const response = await getCategory();
+            const response = await getCategory(selectedType);
             if(response.response_code === 'SUCCESS') {
                 setCategories(response.data);
             }
@@ -42,11 +43,25 @@ const Input = () => {
     }
 
     useEffect(() => {        
-        getDataCategory();
-    },[])
+        if(selectedType !== '') {
+            getDataCategory();
+        }
+    },[selectedType])
+
+    const reset = () => {
+        setSelectedType('');
+        setSelectedCategory('Pick a category');
+        setAmount('');
+        setSelectedDate('');
+        setNotes('');
+    }
+
+    const resetSelectedType = () => {
+        setSelectedCategory('Pick a category');
+    }
 
     const onSelectRadio = (e) => {
-        console.log(e.target.value)
+        resetSelectedType()
         setSelectedType(e.target.value);
     }
 
@@ -65,14 +80,6 @@ const Input = () => {
 
     const onInputNotes = (e) => {
         setNotes(e.target.value);
-    }
-
-    const reset = () => {
-        setSelectedType('');
-        setSelectedCategory('Pick a category');
-        setAmount('');
-        setSelectedDate('');
-        setNotes('');
     }
 
     return (
@@ -98,7 +105,7 @@ const Input = () => {
                     <select value={selectedCategory} className="select" onChange={onSelectCategory}>
                         <option disabled>Pick a category</option>
                         {categories.map((category, index) => {
-                            return <option key={index}>{category.category_name}</option>
+                            return <option key={index}>{selectedType === 'Income' ? category.income_category_name : category.expense_category_name}</option>
                         })}
                     </select>
                 </fieldset>

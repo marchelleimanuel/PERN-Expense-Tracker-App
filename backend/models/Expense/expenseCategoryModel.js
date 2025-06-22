@@ -16,7 +16,8 @@ const ExpenseCategory = db.define('ExpenseCategory',
     },
     {
         tableName: "expense_category",
-        modelName: 'expense_category'
+        modelName: 'expense_category',
+        timestamps: false
     }
 );
 
