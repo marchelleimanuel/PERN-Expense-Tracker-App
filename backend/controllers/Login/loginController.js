@@ -26,9 +26,16 @@ const LoginController = async (req, res) => {
         message: 'Invalid Password' 
     });
 
+    const data = {
+        id: user.id,
+        email: user.email,
+        username: user.username
+    }
+
     return res.status(200).json({
         response_code: SUCCESS_CODE,
-        message: 'Login Success'
+        message: 'Login Success',
+        data: data
     })
 }
 

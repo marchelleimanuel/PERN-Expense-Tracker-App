@@ -17,6 +17,7 @@ const Login = () => {
             const response = await LoginService(emailOrUsername, password)
             
             if(response.response_code === 'SUCCESS') {
+                localStorage.setItem('userLogin', JSON.stringify(response.data));
                 navigate('/home')
             }
         } catch (err) {

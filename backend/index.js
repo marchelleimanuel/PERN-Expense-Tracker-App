@@ -20,11 +20,11 @@ app.use(router)
 
 try {
     await db.authenticate();
-    await ExpenseCategory.sync({force: true})
-    await Expense.sync({force: true})
-    await IncomeCategory.sync({force: true})
-    await Income.sync({force: true})
-    await Transaction.sync({force: true})
+    // await ExpenseCategory.sync({force: true})
+    // await Expense.sync({force: true})
+    // await IncomeCategory.sync({force: true})
+    // await Income.sync({force: true})
+    // await Transaction.sync({force: true})
     console.log('Database connect succesfully!');
 } catch (error) {
     console.log(error);

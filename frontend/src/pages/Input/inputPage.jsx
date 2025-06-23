@@ -10,7 +10,7 @@ const Input = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
-    const whichType = selectedType.toLowerCase()+"_";
+    const dataUser = JSON.parse(localStorage.getItem('userLogin')) || {};
     
     const getDataCategory = async () => {
         try {
@@ -30,12 +30,12 @@ const Input = () => {
             category: selectedCategory === 'Pick a category' ? '' : selectedCategory,
             amount: amount ? amount : '',
             date: selectedDate ? selectedDate : '',
-            notes: notes ? notes : ''
+            notes: notes ? notes : '',
+            id_user: dataUser.id ? dataUser.id : ''
         }
 
         try {
             const response = await postTransaction(data);
-            console.log('ini data transaction:  ', response.data);
             reset();
         } catch (error) {
             console.log(error.response.data.message);

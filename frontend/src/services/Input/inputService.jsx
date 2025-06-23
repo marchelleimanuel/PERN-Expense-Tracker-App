@@ -21,7 +21,8 @@ export const postTransaction = async (input) => {
             category: input.category,
             amount: input.amount,
             date: input.date,
-            notes: input.notes ? input.notes : ''
+            notes: input.notes ? input.notes : '',
+            id_user: input.id_user ? input.id_user : ''
         }
     })
 
