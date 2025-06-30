@@ -4,6 +4,7 @@ import LoginController from '../controllers/Login/loginController.js';
 import InputController from '../controllers/Input/InputController.js';
 import IncomeCategoryController from '../controllers/Input/Category/incomeCategoryController.js';
 import ExpenseCategoryController from '../controllers/Input/Category/expenseCategoryController.js';
+import ReportController from '../controllers/Report/reportController.js';
 
 const router = express.Router();
 
@@ -13,6 +14,8 @@ router.post('/login', LoginController);
 router.get('/input/category-income', IncomeCategoryController);
 router.get('/input/category-expense', ExpenseCategoryController);
 router.post('/input/transaction', InputController);
+
+router.get('/report',  ReportController);
 
 
 export default router;

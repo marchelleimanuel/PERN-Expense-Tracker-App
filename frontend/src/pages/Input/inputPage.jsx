@@ -112,7 +112,7 @@ const Input = () => {
                 {/* input biasa */}
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Amount</legend>
-                    <input type="input" value={amount} className="input" onChange={onInputAmount}/> 
+                    <input type="number" value={amount} min={'1'} className="input" onChange={onInputAmount}/> 
                 </fieldset>
 
                 {/* Date picker */}
@@ -126,7 +126,7 @@ const Input = () => {
                     <legend className="fieldset-legend">Notes (Optional)</legend>
                     <textarea className="textarea h-24" placeholder="Notes" value={notes} onChange={onInputNotes}></textarea>
                 </fieldset>
-                <button className="border-2 border-black btn" onClick={onClickSubmit}>Submit</button>
+                <button className="border-2 border-black btn" onClick={onClickSubmit} disabled={selectedType === '' || selectedCategory === 'Pick a category' || amount === '' || amount === '0' || selectedDate === ''} >Submit</button>
             </div>
         </div>
     )

@@ -5,3 +5,5 @@ export const LOGIN_URL = '/login';
 
 export const INPUT_GET_CATEGORY_URL = '/input/category'
 export const INPUT_POST_TRANSACTION_URL = '/input/transaction'
+
+export const REPORT_GET_ALL_DATA_URL = '/report'
