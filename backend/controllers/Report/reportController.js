@@ -1,12 +1,14 @@
 import {QueryTypes} from "sequelize";
 import db from "../../database/database.js";
 import { SUCCESS_CODE } from "../../common/common.js";
+import Transaction from "../../models/Transaction/transactionModel.js";
 
-const ReportController = async (req, res) => {
+export const ReportController = async (req, res) => {
     const {id_user} = req.query;
 
     const getAllReportData = await db.query(
         `select 
+            tr.id_transaction,
             tr.type,
             case 
                 when tr.type = 'Income' then ic.income_category_name
@@ -35,4 +37,17 @@ const ReportController = async (req, res) => {
     });
 }
 
-export default ReportController;
+export const DeleteReportController = async (req, res) => {
+    const {id_transaction} = req.body;
+
+    await Transaction.destroy({
+        where: {
+            id_transaction: id_transaction
+        }
+    });
+
+    return res.status(200).json({
+        response_code: SUCCESS_CODE,
+        message: 'Data deleted successfully!'
+    })
+}

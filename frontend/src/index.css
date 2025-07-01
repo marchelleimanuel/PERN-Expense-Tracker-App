@@ -2,3 +2,16 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake;
 }
+
+:root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+  scrollbar-gutter: auto !important;
+}
+
+.table-border {
+  @apply border-1 border-black
+}
+
+.table-body-1rem {
+  @apply text-[1rem]
+}
+
