@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
-import {deleteReport, getAllReport} from "../../services/Report/reportService";
+import {deleteReport, editReport, getAllReport} from "../../services/Report/reportService";
+import { getCategory } from "../../services/Input/inputService";
 
 const Report = () => {
     const [dataTable, setDataTable] = useState([]);
     const userId = JSON.parse(localStorage.getItem('userLogin'))?.id;
     const [transactionId, setTransactionId] = useState(0);
     const [amount, setAmount] = useState(0);
-    const [category, setCategory] = useState('');
-    const [date, setDate] = useState('');
     const [notes, setNotes] = useState('');
-    const [type, setType] = useState('');
-
     const [selectedType, setSelectedType] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Pick a category');
-    // const [amount, setAmount] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
-    // const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
+    const dataUser = JSON.parse(localStorage.getItem('userLogin')) || {};
 
     const getDataCategory = async () => {
         try {
@@ -30,43 +26,15 @@ const Report = () => {
         }
     }
 
-    useEffect(() => {        
-        if(selectedType !== '') {
-            getDataCategory();
-        }
-    },[selectedType])
-
-    
-    const onClickSubmit = async () => {
-
-        const data = {
-            type: selectedType ? selectedType : '',
-            category: selectedCategory === 'Pick a category' ? '' : selectedCategory,
-            amount: amount ? amount : '',
-            date: selectedDate ? selectedDate : '',
-            notes: notes ? notes : '',
-            id_user: dataUser.id ? dataUser.id : ''
-        }
-
-        try {
-            const response = await postTransaction(data);
-            reset();
-        } catch (error) {
-            console.log(error.response.data.message);
-        }
-    }
-
-    const onSelectRadio = (e) => {
-        // resetSelectedType()
-        setSelectedType(e.target.value);
-    }
+    useEffect(() => {
+        getDataCategory();
+    }, [selectedType])
 
     const onSelectCategory = (e) => {
         setSelectedCategory(e.target.value);
     }
 
     const onInputAmount = (e) => {
-        // Inputnya masih bisa huruf.. harusnya angka doang
         setAmount(e.target.value);
     }
 
@@ -95,26 +63,15 @@ const Report = () => {
         getDataReport();
     }, [dataTable]);
 
-    const openModalEdit = (data) => {
-        console.log(data);
-        let formattedDate = data.date.split('T');
-        setTransactionId(data.transaction_id);
-        setAmount(data.amount);
-        setCategory(data.category);
-        setSelectedDate(data.date);
-        setNotes(data.notes);
+    const openModalDelete = async (data) => {
+        setTransactionId(data.id_transaction);
         setSelectedType(data.type);
-        document.getElementById('edit_modal').showModal()
-    }
-
-    const openModalDelete = async (transaction_id) => {
-        setTransactionId(transaction_id)
         document.getElementById('delete_modal').showModal()
     }
 
     const onClickDelete = async () => {
         try {
-            const response = await deleteReport(transactionId);
+            const response = await deleteReport(transactionId, selectedType);
 
             if(response.response_code === 'SUCCESS') {
                 document.getElementById('success_delete_modal').showModal()
@@ -125,8 +82,34 @@ const Report = () => {
         }
     }
 
-    const onClickEdit = async () => {
+    const openModalEdit = (data) => {
+        let formattedDate = data.date.split('T');
+        setTransactionId(data.id_transaction);
+        setAmount(data.amount);
+        setSelectedCategory(data.category);
+        setSelectedDate(formattedDate[0]);
+        setNotes(data.notes);
+        setSelectedType(data.type);
+        document.getElementById('edit_modal').showModal()
+    }
 
+    const onClickEdit = async () => {
+        const data = {
+            category: selectedCategory,
+            amount: amount,
+            date: selectedDate,
+            notes: notes ? notes : '',
+            id_user: dataUser.id ? dataUser.id : '',
+            id_transaction: transactionId,
+            type: selectedType
+        }
+
+        try {
+            const response = await editReport(data);
+            document.getElementById('success_edit_modal').showModal()
+        } catch (error) {
+            console.log(error.response.data.message);
+        }
     }
 
     return (
@@ -155,7 +138,7 @@ const Report = () => {
                                 <td className="table-border table-body-1rem">{data.notes ? data.notes : '-'}</td>
                                 <td className="table-border text-center w-[15%]">
                                     <button className="btn btn-success text-white" onClick={() => openModalEdit(data)}>Edit</button>&nbsp;
-                                    <button className="btn btn-error text-white" onClick={() => openModalDelete(data.id_transaction)}>Delete</button> 
+                                    <button className="btn btn-error text-white" onClick={() => openModalDelete(data)}>Delete</button> 
                                 </td>
                             </tr>
                         })}
@@ -174,20 +157,7 @@ const Report = () => {
                     </div>
                 </dialog>
                 <dialog id="edit_modal" className="modal modal-bottom sm:modal-middle">
-                    <div className="modal-box text-center">
-                        <fieldset className="w-1/2 fieldset">
-                            <legend className="fieldset-legend">Type</legend>
-                            <div>
-                                <label>
-                                    <input type="radio" name="options" onChange={onSelectRadio} checked={selectedType === 'Income' ? true : false} className="radio radio-xs" value={'Income'}/>
-                                    Income
-                                </label>
-                                <label  className="ml-5">
-                                    <input type="radio" name="options"  onChange={onSelectRadio} checked={selectedType === 'Expense'  ? true : false} className="radio radio-xs" value={'Expense'}/>
-                                    Expense
-                                </label>
-                            </div>
-                        </fieldset>
+                    <div className="modal-box ">
                         {/* dropdown */}
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Category</legend>
@@ -215,11 +185,10 @@ const Report = () => {
                             <legend className="fieldset-legend">Notes (Optional)</legend>
                             <textarea className="textarea h-24" placeholder="Notes" value={notes} onChange={onInputNotes}></textarea>
                         </fieldset>
-                        {/* <button className="border-2 border-black btn" onClick={onClickSubmit} disabled={selectedType === '' || selectedCategory === 'Pick a category' || amount === '' || amount === '0' || selectedDate === ''} >Submit</button> */}
                         <div className="modal-action">
                         <form method="dialog">
                             <button className="btn mr-3">Cancel</button>
-                            <button className="btn btn-error text-white" onClick={onClickEdit}>Edit</button>
+                            <button className="btn btn-success text-white" onClick={onClickEdit} disabled={selectedCategory === 'Pick a category' || amount === '' || amount === '0' || selectedDate === ''}>Edit</button>
                         </form>
                         </div>
                     </div>
