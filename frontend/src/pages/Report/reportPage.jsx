@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import {deleteReport, editReport, getAllReport} from "../../services/Report/reportService";
 import { getCategory } from "../../services/Input/inputService";
+import { getUserInfo } from "../../utilities/utility";
 
 const Report = () => {
     const [dataTable, setDataTable] = useState([]);
@@ -13,7 +14,7 @@ const Report = () => {
     const [selectedCategory, setSelectedCategory] = useState('Pick a category');
     const [selectedDate, setSelectedDate] = useState('');
     const [categories, setCategories] = useState([]);
-    const dataUser = JSON.parse(localStorage.getItem('userLogin')) || {};
+    const dataUser = getUserInfo();
 
     const getDataCategory = async () => {
         try {

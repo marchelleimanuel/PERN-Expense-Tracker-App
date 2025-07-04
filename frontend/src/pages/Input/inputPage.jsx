@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar"
 import { Dropdown } from 'primereact/dropdown';
 import { getCategory, postTransaction } from "../../services/Input/inputService";
+import { getUserInfo } from "../../utilities/utility";
 
 const Input = () => {
     const [selectedType, setSelectedType] = useState('');
@@ -10,7 +11,7 @@ const Input = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
-    const dataUser = JSON.parse(localStorage.getItem('userLogin')) || {};
+    const dataUser = getUserInfo();
     
     const getDataCategory = async () => {
         try {

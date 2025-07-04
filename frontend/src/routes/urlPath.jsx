@@ -3,6 +3,8 @@ export const BASE_URL = 'http://localhost:5000';
 export const REGISTER_URL = '/register';
 export const LOGIN_URL = '/login';
 
+export const HOME_GET_AMOUNT_URL = '/home/amount'
+
 export const INPUT_GET_CATEGORY_URL = '/input/category'
 export const INPUT_POST_TRANSACTION_URL = '/input/transaction'
 
