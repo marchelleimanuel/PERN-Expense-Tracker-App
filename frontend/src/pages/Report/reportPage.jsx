@@ -15,6 +15,7 @@ const Report = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [categories, setCategories] = useState([]);
     const dataUser = getUserInfo();
+    const [filter, setFilter] = useState('All');
 
     const getDataCategory = async () => {
         try {
@@ -116,7 +117,18 @@ const Report = () => {
     return (
         <div className="flex">
             <Sidebar/>
-            <div className="border-2 w-[87%] p-10">
+            <div className="w-[87%] p-10">
+                <div className="flex justify-end">
+                    <fieldset className="fieldset flex items-center text-[15px]">
+                        <span className="">Filter</span>
+                        <select className="select w-[100px]" >
+                            <option disabled>All</option>
+                            {/* {categories.map((category, index) => {
+                                return <option key={index}>{selectedType === 'Income' ? category.income_category_name : category.expense_category_name}</option>
+                            })} */}
+                        </select>
+                    </fieldset>
+                </div>
                 {dataTable.length > 0 ? (<table className="table table-xs">
                     <thead>
                         <tr className="text-center text-2xl font-black opacity-100 table-border">
@@ -131,11 +143,16 @@ const Report = () => {
                     <tbody>
                         {dataTable.map((data, index) => {
                             let formattedDate = data.date.split('T');
+                            const formatter = Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0,
+                            });
                             return <tr className="table-border" key={index}>
                                 <td className="table-border table-body-1rem">{data.type}</td>
                                 <td className="table-border table-body-1rem">{data.category}</td>
                                 <td className="table-border table-body-1rem">{formattedDate[0]}</td>
-                                <td className="table-border table-body-1rem">{data.amount}</td>
+                                <td className="table-border table-body-1rem">{formatter.format(data.amount)}</td>
                                 <td className="table-border table-body-1rem">{data.notes ? data.notes : '-'}</td>
                                 <td className="table-border text-center w-[15%]">
                                     <button className="btn btn-success text-white" onClick={() => openModalEdit(data)}>Edit</button>&nbsp;

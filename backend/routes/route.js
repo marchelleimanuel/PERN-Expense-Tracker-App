@@ -6,6 +6,7 @@ import IncomeCategoryController from '../controllers/Input/Category/incomeCatego
 import ExpenseCategoryController from '../controllers/Input/Category/expenseCategoryController.js';
 import { DeleteReportController, EditReportController, ReportController } from '../controllers/Report/reportController.js';
 import { GetAmountController } from '../controllers/Home/homeController.js';
+import { BarChartController } from '../controllers/Chart/chartController.js';
 
 const router = express.Router();
 
@@ -21,6 +22,8 @@ router.post('/input/transaction', InputController);
 router.get('/report',  ReportController);
 router.delete('/report/delete', DeleteReportController);
 router.patch('/report/edit', EditReportController);
+
+router.get('/chart/total-expense-income', BarChartController);
 
 
 export default router;
