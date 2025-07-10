@@ -13,13 +13,13 @@ import {
 import { GetTotalExpenseAndIncome } from '../../services/Chart/chartService';
 import { getUserInfo } from '../../utilities/utility';
 
-const MoneyBarChart = () => {
+const MoneyBarChart = (props) => {
     const [dataList, setDataList] = useState([]);
     const dataUser = getUserInfo();
 
     const getDataList = async () => {
         try {
-            const response = await GetTotalExpenseAndIncome(dataUser.id);
+            const response = await GetTotalExpenseAndIncome(dataUser.id, props.year);
             if(response.response_code === 'SUCCESS') {
                 setDataList(response.data);
             }
@@ -30,7 +30,7 @@ const MoneyBarChart = () => {
 
     useEffect(() => {
         getDataList();
-    }, []);
+    }, [props.year]);
 
     return (
         <ResponsiveContainer width="98%" height={300}>

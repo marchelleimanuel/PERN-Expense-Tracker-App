@@ -14,3 +14,7 @@ export const REPORT_EDIT_DATA_URL = '/report/edit'
 
 export const BAR_CHART_GET_TOTAL_EXPENSE_AND_INCOME = '/chart/total-expense-income'
 
+export const GET_YEAR = '/year'
+export const GET_MONTH = '/month'
+export const GET_DAY = '/day'
+

@@ -5,16 +5,18 @@ import Transaction from "../../models/Transaction/transactionModel.js";
 
 
 export const BarChartController = async (req, res) => {
-    const { id_user } = req.query;
+    const { id_user, year } = req.query;
 
-    const year = '2025'
-    let where = [];
-    const whereClause = where.length > 0 ? ` AND ${where.join(' AND ')} ` : '';
-
+    let where = [];    
     if(id_user) {
         where.push(`id_user = ${id_user}`)
+    }
+    
+    if (year) {
         where.push(`EXTRACT(YEAR FROM date) = ${year}`)
     }
+
+    const whereClause = where.length > 0 ? ` AND ${where.join(' AND ')} ` : '';
 
     const query = `
         WITH months AS (
@@ -62,7 +64,7 @@ export const BarChartController = async (req, res) => {
 
     const data = await db.query(query,
     {
-        type: QueryTypes.SELECT
+        type: QueryTypes.SELECT,
     }
     );
     

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import { getAmount } from "../../services/Home/homeService";
-import { getUserInfo } from "../../utilities/utility";
+import { getListOfYear, getUserInfo } from "../../utilities/utility";
 import MoneyBarChart from "../../components/Charts/barChart";
 
 const Home = () => {
     const dataUser = getUserInfo();
     const [totalMoney, setTotalMoney] = useState(0);
+    const [years, setYears] = useState([]);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
     const getTotalAmount = async () => {
         try {
@@ -31,7 +33,17 @@ const Home = () => {
 
     useEffect(() => {
         getTotalAmount();
+
+        const getListYear = async () => {
+            const years = await getListOfYear();
+            setYears(years);
+        }
+        getListYear();
     }, [totalMoney])
+
+    const onFilter = (e) => {
+        setSelectedYear(e.target.value);
+    }
 
     return (
         <div className="flex">
@@ -40,16 +52,16 @@ const Home = () => {
                 <h1 className={`text-3xl`}>My Balance: <span className={`${totalMoney.toString().startsWith('-') ? 'text-red-500': 'text-black'}`}>{totalMoney}</span></h1>
                 <div className="flex justify-end w-[98%] pr-6">
                     <fieldset className="fieldset  flex items-center text-[15px]">
-                        <span className="">Category</span>
-                        <select className="select w-[100px]" >
-                            {/* {categories.map((category, index) => {
-                                return <option key={index}>{selectedType === 'Income' ? category.income_category_name : category.expense_category_name}</option>
-                            })} */}
+                        <span className="">Filter</span>
+                        <select value={selectedYear} onChange={onFilter} className="select w-[100px]" >
+                            {years.map((year, index) => {
+                                return <option key={index}>{year}</option>
+                            })}
                         </select>
                     </fieldset>
                 </div>
                 <div>
-                    <MoneyBarChart/>
+                    <MoneyBarChart year={selectedYear}/>
                 </div>
             </div>
         </div>

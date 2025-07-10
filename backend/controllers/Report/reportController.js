@@ -9,7 +9,33 @@ import Income from "../../models/Income/incomeModel.js";
 import Expense from "../../models/Expense/expenseModel.js";
 
 export const ReportController = async (req, res) => {
-    const {id_user} = req.query;
+    const {id_user, years, months, days} = req.query;
+
+    let replacements = {};
+    let where = [];
+
+    if(id_user) {
+        where.push(`tr.id_user = :id_user`);
+        replacements.id_user = id_user
+    }
+
+    if(years) {
+        where.push(`EXTRACT(YEAR FROM tr.date) = :year`);
+        replacements.year = years
+    }
+
+    if(months) {
+        where.push(`EXTRACT(MONTH FROM tr.date) = :month`);
+        replacements.month = months
+    }
+
+    if(days) {
+        where.push(`EXTRACT(DAY FROM tr.date) = :day`);
+        replacements.day = days
+    }
+
+    const whereClause = where.length > 0 ? `where ${where.join(' AND ')}` : '';
+    console.log(whereClause);
 
     const getAllReportData = await db.query(
         `select 
@@ -27,14 +53,12 @@ export const ReportController = async (req, res) => {
         left join expense_category ec on ex.expense_category_id = ec.expense_category_id
         left join income inc on tr.id_income = inc.id_income
         left join income_category ic on ic.income_category_id = inc.income_category_id
-        where tr.id_user = :id_user
+        ${whereClause}
         order by tr.date desc
         `,
         {
             type: QueryTypes.SELECT,
-            replacements: {
-                id_user: id_user
-            }
+            replacements
         }
     )
 

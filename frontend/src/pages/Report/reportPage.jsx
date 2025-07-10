@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import {deleteReport, editReport, getAllReport} from "../../services/Report/reportService";
 import { getCategory } from "../../services/Input/inputService";
-import { getUserInfo } from "../../utilities/utility";
+import { getListOfDay, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
 
 const Report = () => {
-    const [dataTable, setDataTable] = useState([]);
     const userId = JSON.parse(localStorage.getItem('userLogin'))?.id;
+    const dataUser = getUserInfo();
+
+    const [dataTable, setDataTable] = useState([]);
     const [transactionId, setTransactionId] = useState(0);
     const [amount, setAmount] = useState(0);
     const [notes, setNotes] = useState('');
@@ -14,8 +16,17 @@ const Report = () => {
     const [selectedCategory, setSelectedCategory] = useState('Pick a category');
     const [selectedDate, setSelectedDate] = useState('');
     const [categories, setCategories] = useState([]);
-    const dataUser = getUserInfo();
-    const [filter, setFilter] = useState('All');
+    
+    const [years, setYears] = useState([]);
+    const [months, setMonths] = useState([]);
+    const [days, setDays] = useState([]);
+
+    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedMonth, setSelectedMonth] = useState('');
+    const [selectedDay, setSelectedDay] = useState('');
+
+    const [isEdited, setIsEdited] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
 
     const getDataCategory = async () => {
         try {
@@ -48,10 +59,30 @@ const Report = () => {
         setNotes(e.target.value);
     }
 
+    const onFilter = (e) => {
+        if(e.target.classList.contains('year')) {
+            setSelectedYear(e.target.value);
+        }
+        else if (e.target.classList.contains('month')) {
+            setSelectedMonth(e.target.value)
+        }
+        else {
+            setSelectedDay(e.target.value)
+        }
+    }
+
     
     const getDataReport = async () => {
+        const filter = {
+            years: selectedYear ? selectedYear : '',
+            months: selectedMonth ? selectedMonth : '',
+            days: selectedDay ? selectedDay : ''
+        }
+        console.log(filter.years);
+        console.log(filter.months);
+
         try {
-            const response = await getAllReport(userId);
+            const response = await getAllReport(userId, filter);
             
             if(response.response_code === 'SUCCESS') {
                 setDataTable(response.data);
@@ -63,7 +94,29 @@ const Report = () => {
 
     useEffect(() => {
         getDataReport();
-    }, [dataTable]);
+        console.log('ketrigger kok');
+        console.log('tahunnya: ', selectedYear)
+        console.log('bulannya: ', selectedMonth)
+        console.log('harinya', selectedDay)
+    }, [selectedYear, selectedMonth, selectedDay, isEdited, isDeleted]);
+
+    useEffect(() => {
+        const getListYear = async () => {
+            const years = await getListOfYear();
+            setYears(years);
+        }
+        const getListMonth = async () => {
+            const months = await getListOfMonth();
+            setMonths(months);
+        }
+        const getListDay = async () => {
+            const days = await getListOfDay();
+            setDays(days);
+        }
+        getListYear();
+        getListMonth();
+        getListDay();
+    }, []);
 
     const openModalDelete = async (data) => {
         setTransactionId(data.id_transaction);
@@ -82,6 +135,7 @@ const Report = () => {
         } catch (error) {
             console.log(error);
         }
+        setIsDeleted(false);
     }
 
     const openModalEdit = (data) => {
@@ -112,20 +166,39 @@ const Report = () => {
         } catch (error) {
             console.log(error.response.data.message);
         }
+        setIsEdited(false);
     }
 
     return (
         <div className="flex">
             <Sidebar/>
             <div className="w-[87%] p-10">
-                <div className="flex justify-end">
-                    <fieldset className="fieldset flex items-center text-[15px]">
-                        <span className="">Filter</span>
-                        <select className="select w-[100px]" >
-                            <option disabled>All</option>
-                            {/* {categories.map((category, index) => {
-                                return <option key={index}>{selectedType === 'Income' ? category.income_category_name : category.expense_category_name}</option>
-                            })} */}
+                <div className="flex justify-end gap-10">
+                    <fieldset className="fieldset  flex items-center text-[15px]">
+                        <span className="">Day</span>
+                        <select value={selectedDay} onChange={onFilter} className="select w-[100px] day" >
+                            <option></option>
+                            {days.map((day, index) => {
+                                return <option key={index}>{day}</option>
+                            })}
+                        </select>
+                    </fieldset>
+                    <fieldset className="fieldset  flex items-center text-[15px]">
+                        <span className="">Month</span>
+                        <select value={selectedMonth} onChange={onFilter} className="select w-[100px] month" >
+                            <option></option>
+                            {months.map((month, index) => {
+                                return <option key={index}>{month}</option>
+                            })}
+                        </select>
+                    </fieldset>
+                    <fieldset className="fieldset  flex items-center text-[15px]">
+                        <span className="">Year</span>
+                        <select value={selectedYear} onChange={onFilter} className="select w-[100px] year" >
+                            <option></option>
+                            {years.map((year, index) => {
+                                return <option key={index}>{year}</option>
+                            })}
                         </select>
                     </fieldset>
                 </div>
@@ -217,7 +290,7 @@ const Report = () => {
                         <p className="py-4 text-xl">Data deleted successfully!</p>
                         <div className="modal-action">
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button className="btn" onClick={() => setIsDeleted(true)}>Close</button>
                         </form>
                         </div>
                     </div>
@@ -228,7 +301,7 @@ const Report = () => {
                         <p className="py-4 text-xl">Data edited successfully!</p>
                         <div className="modal-action">
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button className="btn" onClick={() => setIsEdited(true)}>Close</button>
                         </form>
                         </div>
                     </div>

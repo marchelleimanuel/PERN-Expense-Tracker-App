@@ -1,12 +1,15 @@
 import axios from "axios";
 import { BASE_URL, REPORT_DELETE_DATA_URL, REPORT_EDIT_DATA_URL, REPORT_GET_ALL_DATA_URL } from "../../routes/urlPath";
 
-export const getAllReport = async (id_user) => {
+export const getAllReport = async (id_user, filter) => {
     const response = await axios({
         method: 'get',
         url: BASE_URL + REPORT_GET_ALL_DATA_URL,
         params: {
-            id_user: id_user
+            id_user: id_user,
+            years: filter.years ? filter.years : '',
+            months: filter.months ? filter.months : '',
+            days: filter.days ? filter.days : '',
         }
     });
 

@@ -15,21 +15,37 @@ const Sidebar = () => {
         if(menuName === 'Home') navigate('/home')
         if(menuName === 'Input') navigate('/input')
         if(menuName === 'Finance Report') navigate('/report')
-        if(menuName === 'Logout') navigate('/login')
+        if(menuName === 'Logout') {
+            document.getElementById('logout_modal').showModal()
+        }
     }
 
     const logos = ['logo','logo','logo', 'logo'];
     const menuName = ['Home', 'Input', 'Finance Report', 'Logout'];
 
     return (
-        <div className="inline-block h-screen w-[13%] border-2 border-black">
-            {
-                logos.map((logo, i) => {
-                    const menu = menuName[i];
-                    return menus(logo, menu, i);
-                })
-            } 
-        </div>
+        <>
+            <div className="inline-block h-screen w-[13%] border-2 border-black">
+                {
+                    logos.map((logo, i) => {
+                        const menu = menuName[i];
+                        return menus(logo, menu, i);
+                    })
+                } 
+            </div>
+            
+            <dialog id="logout_modal" className="modal modal-bottom sm:modal-middle">
+            <div className="modal-box">
+                <p className="py-4 text-2xl">Are you sure want to logout?</p>
+                <div className="modal-action">
+                <form method="dialog">
+                    <button className="btn">Close</button>
+                    <button className="btn btn-error text-white ml-2" onClick={() => navigate('/login')}>Yes</button>
+                </form>
+                </div>
+            </div>
+            </dialog>
+        </>
     )
 }
 

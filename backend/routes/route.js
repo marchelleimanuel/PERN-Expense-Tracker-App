@@ -7,6 +7,7 @@ import ExpenseCategoryController from '../controllers/Input/Category/expenseCate
 import { DeleteReportController, EditReportController, ReportController } from '../controllers/Report/reportController.js';
 import { GetAmountController } from '../controllers/Home/homeController.js';
 import { BarChartController } from '../controllers/Chart/chartController.js';
+import { GetDayController, GetMonthController, GetYearController } from '../controllers/Utility/utilityController.js';
 
 const router = express.Router();
 
@@ -24,6 +25,10 @@ router.delete('/report/delete', DeleteReportController);
 router.patch('/report/edit', EditReportController);
 
 router.get('/chart/total-expense-income', BarChartController);
+
+router.get('/year', GetYearController);
+router.get('/month', GetMonthController);
+router.get('/day', GetDayController);
 
 
 export default router;
