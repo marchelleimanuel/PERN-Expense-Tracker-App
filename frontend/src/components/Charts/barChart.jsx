@@ -18,8 +18,12 @@ const MoneyBarChart = (props) => {
     const dataUser = getUserInfo();
 
     const getDataList = async () => {
+        const filter = {
+            year: props.year ? props.year : '',
+            month: props.month ? props.month : ''
+        }
         try {
-            const response = await GetTotalExpenseAndIncome(dataUser.id, props.year);
+            const response = await GetTotalExpenseAndIncome(dataUser.id, filter);
             if(response.response_code === 'SUCCESS') {
                 setDataList(response.data);
             }
@@ -30,7 +34,7 @@ const MoneyBarChart = (props) => {
 
     useEffect(() => {
         getDataList();
-    }, [props.year]);
+    }, [props.year, props.month]);
 
     return (
         <ResponsiveContainer width="98%" height={300}>

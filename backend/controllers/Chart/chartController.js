@@ -5,15 +5,28 @@ import Transaction from "../../models/Transaction/transactionModel.js";
 
 
 export const BarChartController = async (req, res) => {
-    const { id_user, year } = req.query;
+    const { id_user, year, month } = req.query;
 
     let where = [];    
+    let replacements = {};
+
     if(id_user) {
-        where.push(`id_user = ${id_user}`)
+        where.push(`id_user = :id_user`);
+        replacements.id_user = id_user;
     }
     
     if (year) {
-        where.push(`EXTRACT(YEAR FROM date) = ${year}`)
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = year;
+    }
+    else {
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = '2025';
+    }
+
+    if (month) {
+        where.push(`EXTRACT(MONTH FROM date) = :month`);
+        replacements.month = month;
     }
 
     const whereClause = where.length > 0 ? ` AND ${where.join(' AND ')} ` : '';
@@ -62,15 +75,113 @@ export const BarChartController = async (req, res) => {
     `
 
 
-    const data = await db.query(query,
+    const monthlyIncomeAndExpense = await db.query(query,
     {
         type: QueryTypes.SELECT,
+        replacements
     }
     );
     
 
     return res.status(200).json({
         response_code: SUCCESS_CODE,
-        data: data
+        data: monthlyIncomeAndExpense
     });
+}
+
+export const ExpensePieChartController = async (req, res) => {
+    const { id_user, year, month } = req.query;
+
+    let replacements = {};
+    let where = []
+
+    if(id_user) {
+        where.push('id_user = :id_user');
+        replacements.id_user = id_user
+    }
+
+    if (year) {
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = year;
+    }
+
+    if (month) {
+        where.push(`EXTRACT(MONTH FROM date) = :month`);
+        replacements.month = month;
+    }
+
+
+    const whereClause = where.length > 0 ? `where ${where.join(' AND ')}` : '';
+
+    const query = `
+        select 
+            ec.expense_category_name as name,
+            sum(tr.amount)::integer as amount,
+            tr.type
+        from transaction tr
+        join expense ex on tr.id_expense = ex.id_expense
+        join expense_category ec on ec.expense_category_id = ex.expense_category_id
+        ${whereClause}
+        group by ec.expense_category_name, tr.type
+    `
+
+    const expensePerCategory = await db.query(query, {
+        type: QueryTypes.SELECT,
+        replacements,
+    })
+
+    return res.status(200).json({
+        response_code: SUCCESS_CODE,
+        data: expensePerCategory
+    })
+
+
+}
+
+export const IncomePieChartController = async (req, res) => {
+    const { id_user, year, month } = req.query;
+
+    let replacements = {};
+    let where = []
+
+    if(id_user) {
+        where.push('id_user = :id_user');
+        replacements.id_user = id_user
+    }
+
+    if (year) {
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = year;
+    }
+
+    if (month) {
+        where.push(`EXTRACT(MONTH FROM date) = :month`);
+        replacements.month = month;
+    }
+
+    const whereClause = where.length > 0 ? `where ${where.join(' AND ')}` : '';
+
+    const query = `
+        select 
+            ec.income_category_name as name,
+            sum(tr.amount)::integer as amount,
+            tr.type
+        from transaction tr
+        join income ex on tr.id_income = ex.id_income
+        join income_category ec on ec.income_category_id = ex.income_category_id
+        ${whereClause}
+        group by ec.income_category_name, tr.type
+    `
+
+    const incomePerCategory = await db.query(query, {
+        type: QueryTypes.SELECT,
+        replacements,
+    })
+
+    return res.status(200).json({
+        response_code: SUCCESS_CODE,
+        data: incomePerCategory
+    })
+
+
 }
