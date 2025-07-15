@@ -48,7 +48,7 @@ const IncomePieChart = (props) => {
                 props.onDataLoaded(response.data);
             }
         } catch (error) {
-            console.log(error);
+            // console.log('error');
         }
     }
 

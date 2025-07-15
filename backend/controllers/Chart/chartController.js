@@ -104,6 +104,10 @@ export const ExpensePieChartController = async (req, res) => {
         where.push(`EXTRACT(YEAR FROM date) = :year`);
         replacements.year = year;
     }
+    else {
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = '2025';
+    }
 
     if (month) {
         where.push(`EXTRACT(MONTH FROM date) = :month`);
@@ -152,6 +156,10 @@ export const IncomePieChartController = async (req, res) => {
     if (year) {
         where.push(`EXTRACT(YEAR FROM date) = :year`);
         replacements.year = year;
+    }
+    else {
+        where.push(`EXTRACT(YEAR FROM date) = :year`);
+        replacements.year = '2025';
     }
 
     if (month) {

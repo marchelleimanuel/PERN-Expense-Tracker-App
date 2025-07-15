@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import { getAmount } from "../../services/Home/homeService";
-import { getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
+import { formatToRupiah, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
 import MoneyBarChart from "../../components/Charts/barChart";
 import ExpensePieChart from "../../components/Charts/ExpensePieChart";
 import IncomePieChart from "../../components/Charts/IncomePieChart";
@@ -20,8 +20,11 @@ const Home = () => {
 
     const [dataExpenseWithHighestPercentage, setDataExpenseWithHighestPercentage] = useState([]);
     const [dataIncomeWithHighestPercentage, setDataIncomeWithHighestPercentage] = useState([]);
-    
-    const handleDataLoaded = (data) => {
+
+    const [totalIncome, setTotalIncome] = useState(0);
+    const [totalExpense, setTotalExpense] = useState(0);
+
+    const getHighestPercentage = (data) => {
         const total = data.reduce((sum, item) => sum + item.amount, 0);
 
         const dataWithPercent = data.map(item => ({
@@ -33,28 +36,38 @@ const Home = () => {
             curr.percent > prev.percent ? curr : prev
         );
 
-        if(data[0].type === 'Expense') {
-            setDataExpenseWithHighestPercentage(highest);
-        }
-        else {
-            setDataIncomeWithHighestPercentage(highest);
+        return [highest, total];
+    }
+
+    const getHighestIncomePercentageByCategory = (data) => {
+        if(data.length === 0) {
+            setTotalIncome(0);
+            return;
         }
 
+        const [highest, total] = getHighestPercentage(data);
+        
+        setDataIncomeWithHighestPercentage(highest);
+        setTotalIncome(total)
+    }
+
+    const getHighestExpensePercentageByCategory = (data) => {
+        if(data.length === 0) {
+            setTotalExpense(0);
+            return;
+        }
+
+        const [highest, total] = getHighestPercentage(data);
+
+        setDataExpenseWithHighestPercentage(highest);
+        setTotalExpense(total);
     }
 
     const getTotalAmount = async () => {
         try {
             const response = await getAmount(dataUser.id);
-            
             if(response.response_code === 'SUCCESS') {
-                const formatter = Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                });
-
-                const rupiah = formatter.format(response.data);
-
+                const rupiah = formatToRupiah(response.data);
                 setTotalMoney(rupiah);
             }
 
@@ -115,6 +128,11 @@ const Home = () => {
     const onSelectedMonth = (selectedMonth) => {
         const dataMonth = Object.entries(month);
 
+        if(selectedMonth === '') {
+            setShownMonth('');
+            return;
+        }
+
         dataMonth.forEach((data) => {
             if(selectedMonth == data[0]) {
                 setShownMonth(data[1]);
@@ -128,7 +146,7 @@ const Home = () => {
             <Sidebar/>
             <div className="w-[87%] p-10 ">
                 <h1 className={`text-3xl`}>My Balance: <span className={`${totalMoney.toString().startsWith('-') ? 'text-red-500': 'text-black'}`}>{totalMoney}</span></h1>
-                <div className="flex justify-end gap-10">
+                <div className="flex justify-end gap-10 mb-1 ">
                     <fieldset className="fieldset  flex items-center text-[15px]">
                         <span className="">Month</span>
                         <select value={selectedMonth} onChange={onFilter} className="select w-[100px] month" >
@@ -148,20 +166,39 @@ const Home = () => {
                         </select>
                     </fieldset>
                 </div>
-                <div className="flex">
-                    <div className="border-1 border-black w-[30%] text-center">
+                <div className="flex gap-5">
+                    <div className="bg-white p-6 rounded-lg shadow-md w-[30%] text-center">
                         <p className="text-xl font-bold">Expense By Category</p>
-                        <ExpensePieChart onDataLoaded={handleDataLoaded} year={selectedYear} month={selectedMonth}/>
+                        {<ExpensePieChart onDataLoaded={getHighestExpensePercentageByCategory} year={selectedYear} month={selectedMonth}/> }
                         <p>Highest Expense On {<br/>}<span className="font-bold">{dataExpenseWithHighestPercentage.name}</span></p>
                     </div>
-                    <div className="border-1 border-black w-[30%] text-center">
+                    <div className="bg-white p-6 rounded-lg shadow-md w-[30%] text-center">
                         <p className="text-xl font-bold">Income By Category</p>
-                        <IncomePieChart onDataLoaded={handleDataLoaded} year={selectedYear} month={selectedMonth}/>
+                        <IncomePieChart onDataLoaded={getHighestIncomePercentageByCategory} year={selectedYear} month={selectedMonth}/>
                         <p>Highest Income On {<br/>}<span className="font-bold">{dataIncomeWithHighestPercentage.name}</span></p>
                     </div>
+
+                    <div className="bg-white p-6 rounded-lg shadow-md space-y-4 w-[50%]">
+                        <h2 className="text-xl font-bold text-center">Summary</h2>
+                        <div>
+                            <p className="text-gray-500 font-semibold">Total Income:</p>
+                            {/* <p>{console.log('halo ini totalincome', totalIncome)}</p> */}
+                            <p className="text-2xl font-bold text-green-600">{totalIncome ? formatToRupiah(totalIncome) : 0}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-500 font-semibold">Total Expense:</p>
+                            {/* <p>{console.log('halo ini totalExpense', totalExpense)}</p> */}
+                            <p className="text-2xl font-bold text-red-600">{totalExpense ? formatToRupiah(totalExpense) : 0}</p>
+                        </div>
+                        <div>
+                            <p className="text-gray-500 font-semibold">Net Income:</p>
+                            <p className={`text-2xl font-bold ${(totalIncome - totalExpense).toString().startsWith('-') ? `text-red-600` : `text-green-600`}`}>{formatToRupiah(totalIncome - totalExpense)}</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h1 className="font-bold text-2xl text-center">Expense & Income on {shownMonth ? shownMonth : ''} {selectedYear ? selectedYear : '2025'}</h1>
+
+                <div className="mt-5 bg-white p-6 rounded-lg shadow-md">
+                    <h1 className="font-bold text-2xl text-center">Expense & Income {shownMonth ? shownMonth : ''} {selectedYear ? selectedYear : '2025'}</h1>
                     <MoneyBarChart year={selectedYear} month={selectedMonth}/>
                 </div>
             </div>

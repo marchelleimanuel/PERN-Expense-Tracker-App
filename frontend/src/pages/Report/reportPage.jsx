@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import {deleteReport, editReport, getAllReport} from "../../services/Report/reportService";
 import { getCategory } from "../../services/Input/inputService";
-import { getListOfDay, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
+import { formatToRupiah, getListOfDay, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
 
 const Report = () => {
     const userId = JSON.parse(localStorage.getItem('userLogin'))?.id;
@@ -78,8 +78,6 @@ const Report = () => {
             months: selectedMonth ? selectedMonth : '',
             days: selectedDay ? selectedDay : ''
         }
-        console.log(filter.years);
-        console.log(filter.months);
 
         try {
             const response = await getAllReport(userId, filter);
@@ -94,10 +92,6 @@ const Report = () => {
 
     useEffect(() => {
         getDataReport();
-        console.log('ketrigger kok');
-        console.log('tahunnya: ', selectedYear)
-        console.log('bulannya: ', selectedMonth)
-        console.log('harinya', selectedDay)
     }, [selectedYear, selectedMonth, selectedDay, isEdited, isDeleted]);
 
     useEffect(() => {
@@ -216,16 +210,11 @@ const Report = () => {
                     <tbody>
                         {dataTable.map((data, index) => {
                             let formattedDate = data.date.split('T');
-                            const formatter = Intl.NumberFormat('id-ID', {
-                                style: 'currency',
-                                currency: 'IDR',
-                                minimumFractionDigits: 0,
-                            });
                             return <tr className="table-border" key={index}>
                                 <td className="table-border table-body-1rem">{data.type}</td>
                                 <td className="table-border table-body-1rem">{data.category}</td>
                                 <td className="table-border table-body-1rem">{formattedDate[0]}</td>
-                                <td className="table-border table-body-1rem">{formatter.format(data.amount)}</td>
+                                <td className="table-border table-body-1rem">{formatToRupiah(data.amount)}</td>
                                 <td className="table-border table-body-1rem">{data.notes ? data.notes : '-'}</td>
                                 <td className="table-border text-center w-[15%]">
                                     <button className="btn btn-success text-white" onClick={() => openModalEdit(data)}>Edit</button>&nbsp;

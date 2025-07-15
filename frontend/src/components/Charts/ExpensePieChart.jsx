@@ -50,12 +50,12 @@ const ExpensePieChart = (props) => {
 
         try {
             const response = await GetExpensePerCategory(dataUser.id, filter);
-            if(response.response_code === 'SUCCESS') {               
+            if(response.response_code === 'SUCCESS') {           
                 setDataList(response.data);
                 props.onDataLoaded(response.data);
             }
         } catch (error) {
-            console.log(error);
+            // console.log('error kocak');
         }
     }
 

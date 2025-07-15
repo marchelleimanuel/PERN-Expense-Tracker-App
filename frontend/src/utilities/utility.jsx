@@ -51,3 +51,13 @@ export const getListOfDay = async () => {
 
     return days;
 }
+
+export const formatToRupiah = (data) => {
+    const formatter = Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    });
+
+    return formatter.format(data);
+}
