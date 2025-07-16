@@ -5,7 +5,7 @@ const Sidebar = () => {
 
     const menus = (logo, name, key) => {
         return (
-            <div key={key} className={`flex gap-2 p-2 hover:bg-black hover:opacity-75 cursor-pointer hover:text-white ${name === 'Logout' ? 'text-red-500' : 'text-black'}`} onClick={() => onMenuClicked(name)} >
+            <div key={key} className={`flex gap-2 p-2 hover:bg-black hover:opacity-75 cursor-pointer hover:text-white ${name === 'Logout' ? 'text-red-500' : 'text-black'} `} onClick={() => onMenuClicked(name)} >
                 <div>{logo}</div>
                 <p>{name}</p>
             </div>
@@ -25,7 +25,7 @@ const Sidebar = () => {
 
     return (
         <>
-            <div className="inline-block h-screen w-[13%] border-2 border-black">
+            <div className="inline-block w-[13%] border-2 border-black fixed top-0 bottom-0">
                 {
                     logos.map((logo, i) => {
                         const menu = menuName[i];

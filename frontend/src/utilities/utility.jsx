@@ -61,3 +61,11 @@ export const formatToRupiah = (data) => {
 
     return formatter.format(data);
 }
+
+export const formatPercentage = (data) => {
+    const formatter = Intl.NumberFormat('id-ID', {
+        maximumFractionDigits: 0,
+    });
+
+    return formatter.format(data);
+}

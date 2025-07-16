@@ -144,8 +144,8 @@ const Home = () => {
     return (
         <div className="flex">
             <Sidebar/>
-            <div className="w-[87%] p-10 ">
-                <h1 className={`text-3xl`}>My Balance: <span className={`${totalMoney.toString().startsWith('-') ? 'text-red-500': 'text-black'}`}>{totalMoney}</span></h1>
+            <div className="w-[87%] p-10 ml-[13%]">
+                <h1 className={`text-3xl font-bold`}>Balance: <span className={`font-normal ${totalMoney.toString().startsWith('-') ? 'text-red-500': 'text-black'}`}>{totalMoney}</span></h1>
                 <div className="flex justify-end gap-10 mb-1 ">
                     <fieldset className="fieldset  flex items-center text-[15px]">
                         <span className="">Month</span>

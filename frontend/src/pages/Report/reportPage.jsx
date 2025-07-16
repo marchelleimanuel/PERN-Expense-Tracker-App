@@ -24,9 +24,12 @@ const Report = () => {
     const [selectedYear, setSelectedYear] = useState('');
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedDay, setSelectedDay] = useState('');
+    const [type, setType] = useState('');
 
     const [isEdited, setIsEdited] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
+
+    const types = ['Expense', 'Income'];
 
     const getDataCategory = async () => {
         try {
@@ -60,14 +63,22 @@ const Report = () => {
     }
 
     const onFilter = (e) => {
+        let value = e.target.value;
+        if(value === 'All') {
+            value = '';
+        }
+
         if(e.target.classList.contains('year')) {
-            setSelectedYear(e.target.value);
+            setSelectedYear(value);
         }
         else if (e.target.classList.contains('month')) {
-            setSelectedMonth(e.target.value)
+            setSelectedMonth(value)
+        }
+        else if(e.target.classList.contains('day')) {
+            setSelectedDay(value)
         }
         else {
-            setSelectedDay(e.target.value)
+            setType(value)
         }
     }
 
@@ -76,7 +87,8 @@ const Report = () => {
         const filter = {
             years: selectedYear ? selectedYear : '',
             months: selectedMonth ? selectedMonth : '',
-            days: selectedDay ? selectedDay : ''
+            days: selectedDay ? selectedDay : '',
+            type: type ? type : '',
         }
 
         try {
@@ -92,7 +104,7 @@ const Report = () => {
 
     useEffect(() => {
         getDataReport();
-    }, [selectedYear, selectedMonth, selectedDay, isEdited, isDeleted]);
+    }, [selectedYear, selectedMonth, selectedDay, isEdited, isDeleted, type]);
 
     useEffect(() => {
         const getListYear = async () => {
@@ -166,12 +178,21 @@ const Report = () => {
     return (
         <div className="flex">
             <Sidebar/>
-            <div className="w-[87%] p-10">
+            <div className="w-[87%] p-10 ml-[13%]">
                 <div className="flex justify-end gap-10">
+                    <fieldset className="fieldset flex items-center text-[15px]">
+                        <span className="">Type</span>
+                        <select value={type} onChange={onFilter} className="select w-[100px] type" >
+                            <option>All</option>
+                            {types.map((type, index) => {
+                                return <option key={index}>{type}</option>
+                            })}
+                        </select>
+                    </fieldset>
                     <fieldset className="fieldset  flex items-center text-[15px]">
                         <span className="">Day</span>
                         <select value={selectedDay} onChange={onFilter} className="select w-[100px] day" >
-                            <option></option>
+                            <option>All</option>
                             {days.map((day, index) => {
                                 return <option key={index}>{day}</option>
                             })}
@@ -180,7 +201,7 @@ const Report = () => {
                     <fieldset className="fieldset  flex items-center text-[15px]">
                         <span className="">Month</span>
                         <select value={selectedMonth} onChange={onFilter} className="select w-[100px] month" >
-                            <option></option>
+                            <option>All</option>
                             {months.map((month, index) => {
                                 return <option key={index}>{month}</option>
                             })}
@@ -189,7 +210,7 @@ const Report = () => {
                     <fieldset className="fieldset  flex items-center text-[15px]">
                         <span className="">Year</span>
                         <select value={selectedYear} onChange={onFilter} className="select w-[100px] year" >
-                            <option></option>
+                            <option>All</option>
                             {years.map((year, index) => {
                                 return <option key={index}>{year}</option>
                             })}
@@ -199,6 +220,7 @@ const Report = () => {
                 {dataTable.length > 0 ? (<table className="table table-xs">
                     <thead>
                         <tr className="text-center text-2xl font-black opacity-100 table-border">
+                            <th className="table-border">No</th>
                             <th className="table-border">Type</th>
                             <th className="table-border">Category</th>
                             <th className="table-border">Date</th>
@@ -211,6 +233,7 @@ const Report = () => {
                         {dataTable.map((data, index) => {
                             let formattedDate = data.date.split('T');
                             return <tr className="table-border" key={index}>
+                                <td className="table-border table-body-1rem">{index+1}</td>
                                 <td className="table-border table-body-1rem">{data.type}</td>
                                 <td className="table-border table-body-1rem">{data.category}</td>
                                 <td className="table-border table-body-1rem">{formattedDate[0]}</td>

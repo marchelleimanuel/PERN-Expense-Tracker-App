@@ -8,6 +8,7 @@ import { DeleteReportController, EditReportController, ReportController } from '
 import { GetAmountController } from '../controllers/Home/homeController.js';
 import { BarChartController, ExpensePieChartController, IncomePieChartController } from '../controllers/Chart/chartController.js';
 import { GetDayController, GetMonthController, GetYearController } from '../controllers/Utility/utilityController.js';
+import RecentTransactionController from '../controllers/Input/RecentTransaction/recentTransactionController.js';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/home/amount', GetAmountController);
 router.get('/input/category-income', IncomeCategoryController);
 router.get('/input/category-expense', ExpenseCategoryController);
 router.post('/input/transaction', InputController);
+router.get('/input/recent-transaction', RecentTransactionController);
 
 router.get('/report',  ReportController);
 router.delete('/report/delete', DeleteReportController);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, INPUT_GET_CATEGORY_URL, INPUT_POST_TRANSACTION_URL } from "../../routes/urlPath";
+import { BASE_URL, INPUT_GET_CATEGORY_URL, INPUT_GET_RECENT_TRANSACTION_URL, INPUT_POST_TRANSACTION_URL } from "../../routes/urlPath";
 
 export const getCategory = async (type) => {
     const response = await axios({
@@ -28,4 +28,17 @@ export const postTransaction = async (input) => {
 
     const { data } = response;
     return data;
+}
+
+export const getRecentTransaction = async (id_user) => {
+    const response = await axios({
+        method: 'get',
+        url: BASE_URL + INPUT_GET_RECENT_TRANSACTION_URL,
+        params: {
+            id_user: id_user
+        }
+    })
+
+    const { data } = response;
+    return response; 
 }
