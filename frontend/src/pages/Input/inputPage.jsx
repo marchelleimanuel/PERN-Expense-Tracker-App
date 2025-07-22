@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/sideBar"
-import { Dropdown } from 'primereact/dropdown';
-import { getCategory, getRecentTransaction, postTransaction } from "../../services/Input/inputService";
-import { formatPercentage, formatToRupiah, getUserInfo } from "../../utilities/utility";
+import { getCategory, getRecentTransaction, getTopSpendingTransaction, postTransaction } from "../../services/Input/inputService";
+import { formatDate, formatPercentage, formatToRupiah, getUserInfo } from "../../utilities/utility";
+import { useNavigate } from "react-router-dom";
 
 const Input = () => {
+    const navigate = useNavigate();
     const [selectedType, setSelectedType] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Pick a category');
     const [amount, setAmount] = useState('');
@@ -12,7 +13,9 @@ const Input = () => {
     const [notes, setNotes] = useState('');
     const [categories, setCategories] = useState([]);
     const dataUser = getUserInfo();
-    const [dataRecent, setDataRecent] = useState([]);
+    const [topSpending, setTopSpending] = useState([]);
+    const [recentTransaction, setRecentTransaction] = useState([]);
+    const [transaction, setTransaction] = useState([]);
     
     const getDataCategory = async () => {
         try {
@@ -28,8 +31,17 @@ const Input = () => {
     const getRecent = async () => {
         try {
             const response = await getRecentTransaction(dataUser.id);
-            const sortedData = calculateRecentTransaction(response.data.data);
-            setDataRecent(sortedData);
+            setRecentTransaction(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getTopSpending = async () => {
+        try {
+            const response = await getTopSpendingTransaction(dataUser.id);
+            const sortedData = calculateRecentTransaction(response.data);
+            setTopSpending(sortedData);
         } catch (error) {
             console.log(error);
         }
@@ -62,6 +74,7 @@ const Input = () => {
 
         try {
             const response = await postTransaction(data);
+            setTransaction(response.data);
             reset();
         } catch (error) {
             console.log(error.response.data.message);
@@ -72,12 +85,12 @@ const Input = () => {
         if(selectedType !== '') {
             getDataCategory();
         }
-        getRecent();
-
-        // if(dataRecent.length > 0) {
-        //     calculateRecentTransaction();
-        // }
     },[selectedType])
+
+    useEffect(() => {
+        getTopSpending();
+        getRecent();
+    }, [transaction])
 
     const reset = () => {
         setSelectedType('');
@@ -162,19 +175,41 @@ const Input = () => {
                 </div>
 
                 <div className="recent-transaction border-1 border-black w-[50%]">
-                    <h2 className="text-gray-700 font-bold text-xl">Top Spending</h2>
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        {dataRecent.map((data) => {
-                            return <div key={data.name} className="mb-4">
-                                <div className="flex justify-between">
-                                    <p className="font-bold">{data.name}</p>
-                                    <p className="text-red-500">{formatPercentage(data.percentage)}%</p>
+                    <div className="top-spending">
+                        <h2 className="text-gray-700 font-bold text-xl">Top Spending</h2>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            {topSpending.map((data) => {
+                                return <div key={data.name} className="mb-4">
+                                    <div className="flex justify-between">
+                                        <p className="font-bold">{data.name}</p>
+                                        <p className="text-red-500">{formatPercentage(data.percentage)}%</p>
+                                    </div>
+                                    <p className="text-gray-500">{formatToRupiah(data.amount)}</p>
                                 </div>
-                                <p className="text-gray-500">{formatToRupiah(data.amount)}</p>
-                            </div>
-                        })}
+                            })}
+                        </div>
+                    </div>
+                    <div className="recent-transaction">
+                        <div className="flex justify-between">
+                            <h2 className="text-gray-700 font-bold text-xl">Recent Transaction</h2>
+                            <p className="underline cursor-pointer" onClick={() => navigate('/report')}>View All</p>
+                        </div>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            {recentTransaction.map((data, index) => {
+                                if(index <= 2) {
+                                    return <div key={index} className="mb-4">
+                                        <div className="flex justify-between">
+                                            <p className="font-bold">{data.category_name}</p>
+                                            <p className={`${data.type === 'Income' ? 'text-green-500' : 'text-red-500'}`}>{formatToRupiah(data.amount)}</p>
+                                        </div>
+                                        <p className="text-gray-500">{formatDate(data.date)}</p>
+                                    </div>
+                                }
+                            })}
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     )

@@ -13,7 +13,7 @@ const Home = () => {
     const [years, setYears] = useState([]);
     const [months, setMonths] = useState([]);
 
-    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState('');
 
     const [shownMonth, setShownMonth] = useState('');
@@ -182,12 +182,10 @@ const Home = () => {
                         <h2 className="text-xl font-bold text-center">Summary</h2>
                         <div>
                             <p className="text-gray-500 font-semibold">Total Income:</p>
-                            {/* <p>{console.log('halo ini totalincome', totalIncome)}</p> */}
                             <p className="text-2xl font-bold text-green-600">{totalIncome ? formatToRupiah(totalIncome) : 0}</p>
                         </div>
                         <div>
                             <p className="text-gray-500 font-semibold">Total Expense:</p>
-                            {/* <p>{console.log('halo ini totalExpense', totalExpense)}</p> */}
                             <p className="text-2xl font-bold text-red-600">{totalExpense ? formatToRupiah(totalExpense) : 0}</p>
                         </div>
                         <div>

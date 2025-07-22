@@ -2,7 +2,7 @@ import { QueryTypes } from "sequelize";
 import { SUCCESS_CODE } from "../../../common/common.js";
 import db from "../../../database/database.js";
 
-const RecentTransactionController = async (req, res) => {
+const TopSpendingTransactionController = async (req, res) => {
     const { id_user } = req.query;
 
     const year = new Date().getFullYear();
@@ -30,26 +30,18 @@ const RecentTransactionController = async (req, res) => {
 
     const query = `
         select 
-            tr.type,
-            CASE
-                when tr.id_expense is not null then ec.expense_category_name
-                else ic.income_category_name
-            END as category_name,
-            tr.date,
-            tr.amount::integer as amount
+            ec.expense_category_name as name,
+            sum(tr.amount)::integer as amount
         from transaction tr
-        left join expense ex on tr.id_expense = ex.id_expense
-        left join expense_category ec on ec.expense_category_id = ex.expense_category_id
-        left join income inc on tr.id_income = inc.id_income
-        left join income_category ic on inc.income_category_id = ic.income_category_id
+        join expense ex on tr.id_expense = ex.id_expense
+        join expense_category ec on ec.expense_category_id = ex.expense_category_id
         ${whereClause}
-        order by tr.date desc, tr.id_transaction desc
+        group by ec.expense_category_name, tr.type
     `
 
     const data = await db.query(query, {
         replacements,
-        type: QueryTypes.SELECT,
-        logging: console.log
+        type: QueryTypes.SELECT
     });
 
     return res.status(200).json({
@@ -58,4 +50,4 @@ const RecentTransactionController = async (req, res) => {
     })
 }
 
-export default RecentTransactionController;
+export default TopSpendingTransactionController;

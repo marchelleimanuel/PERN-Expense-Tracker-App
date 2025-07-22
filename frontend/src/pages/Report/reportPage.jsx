@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/Sidebar/sideBar";
 import {deleteReport, editReport, getAllReport} from "../../services/Report/reportService";
 import { getCategory } from "../../services/Input/inputService";
-import { formatToRupiah, getListOfDay, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
+import { formatToRupiah, getListOfMonth, getListOfYear, getUserInfo } from "../../utilities/utility";
+import * as XLSX from 'xlsx';
 
 const Report = () => {
     const userId = JSON.parse(localStorage.getItem('userLogin'))?.id;
@@ -19,17 +20,31 @@ const Report = () => {
     
     const [years, setYears] = useState([]);
     const [months, setMonths] = useState([]);
-    const [days, setDays] = useState([]);
 
-    const [selectedYear, setSelectedYear] = useState('');
-    const [selectedMonth, setSelectedMonth] = useState('');
-    const [selectedDay, setSelectedDay] = useState('');
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()+1);
     const [type, setType] = useState('');
 
     const [isEdited, setIsEdited] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
     const types = ['Expense', 'Income'];
+
+    const nameOfMonth = {
+        0: 'Jan',
+        1: 'Feb',
+        2: 'Mar',
+        3: 'Apr',
+        4: 'May',
+        5: 'Jun',
+        6: 'Jul',
+        7: 'Aug',
+        8: 'Sep',
+        9: 'Oct',
+        10: 'Nov',
+        11: 'Dec'
+    };
+
 
     const getDataCategory = async () => {
         try {
@@ -74,9 +89,6 @@ const Report = () => {
         else if (e.target.classList.contains('month')) {
             setSelectedMonth(value)
         }
-        else if(e.target.classList.contains('day')) {
-            setSelectedDay(value)
-        }
         else {
             setType(value)
         }
@@ -87,7 +99,6 @@ const Report = () => {
         const filter = {
             years: selectedYear ? selectedYear : '',
             months: selectedMonth ? selectedMonth : '',
-            days: selectedDay ? selectedDay : '',
             type: type ? type : '',
         }
 
@@ -104,7 +115,7 @@ const Report = () => {
 
     useEffect(() => {
         getDataReport();
-    }, [selectedYear, selectedMonth, selectedDay, isEdited, isDeleted, type]);
+    }, [selectedYear, selectedMonth, isEdited, isDeleted, type]);
 
     useEffect(() => {
         const getListYear = async () => {
@@ -115,13 +126,8 @@ const Report = () => {
             const months = await getListOfMonth();
             setMonths(months);
         }
-        const getListDay = async () => {
-            const days = await getListOfDay();
-            setDays(days);
-        }
         getListYear();
         getListMonth();
-        getListDay();
     }, []);
 
     const openModalDelete = async (data) => {
@@ -174,48 +180,73 @@ const Report = () => {
         }
         setIsEdited(false);
     }
+    const onClickExport = () => {
+        const filterMonth = selectedMonth ? selectedMonth : '';
+
+        let month = '';
+        if(filterMonth) {
+            for(const [key, value] of Object.entries(nameOfMonth)) {
+                if(selectedMonth == parseInt(key)+1) {
+                    month = value;
+                    break;
+                }
+            }
+        }
+        const filteredData = dataTable.map((result, index) => {
+            let formattedDate = result.date.split('T');
+            return {
+                No: index+1,
+                Type: result.type,
+                Category: result.category,
+                Date: formattedDate[0],
+                Note: result.notes ? result.notes : '-',
+                Amount: formatToRupiah(result.amount)
+            }
+        });
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+        XLSX.utils.book_append_sheet(wb, ws, `${month ? `${month}-` : ''}${selectedYear}`);
+        XLSX.writeFile(wb, `${month ? `${month}-` : ''}${selectedYear}.xlsx`)
+    }
 
     return (
         <div className="flex">
             <Sidebar/>
             <div className="w-[87%] p-10 ml-[13%]">
-                <div className="flex justify-end gap-10">
-                    <fieldset className="fieldset flex items-center text-[15px]">
-                        <span className="">Type</span>
-                        <select value={type} onChange={onFilter} className="select w-[100px] type" >
-                            <option>All</option>
-                            {types.map((type, index) => {
-                                return <option key={index}>{type}</option>
-                            })}
-                        </select>
-                    </fieldset>
-                    <fieldset className="fieldset  flex items-center text-[15px]">
-                        <span className="">Day</span>
-                        <select value={selectedDay} onChange={onFilter} className="select w-[100px] day" >
-                            <option>All</option>
-                            {days.map((day, index) => {
-                                return <option key={index}>{day}</option>
-                            })}
-                        </select>
-                    </fieldset>
-                    <fieldset className="fieldset  flex items-center text-[15px]">
-                        <span className="">Month</span>
-                        <select value={selectedMonth} onChange={onFilter} className="select w-[100px] month" >
-                            <option>All</option>
-                            {months.map((month, index) => {
-                                return <option key={index}>{month}</option>
-                            })}
-                        </select>
-                    </fieldset>
-                    <fieldset className="fieldset  flex items-center text-[15px]">
-                        <span className="">Year</span>
-                        <select value={selectedYear} onChange={onFilter} className="select w-[100px] year" >
-                            <option>All</option>
-                            {years.map((year, index) => {
-                                return <option key={index}>{year}</option>
-                            })}
-                        </select>
-                    </fieldset>
+                <div className="flex justify-between">
+                    <div className="flex">
+                        <button className={`btn btn-success text-white font-bold ${dataTable.length > 0 ? `visible` : `hidden`}`} onClick={onClickExport}>Export</button>
+                    </div>
+                    <div className="flex justify-end gap-10">
+                        <fieldset className="fieldset flex items-center text-[15px]">
+                            <span className="">Type</span>
+                            <select value={type} onChange={onFilter} className="select w-[100px] type" >
+                                <option>All</option>
+                                {types.map((type, index) => {
+                                    return <option key={index}>{type}</option>
+                                })}
+                            </select>
+                        </fieldset>
+                        <fieldset className="fieldset  flex items-center text-[15px]">
+                            <span className="">Month</span>
+                            <select value={selectedMonth} onChange={onFilter} className="select w-[100px] month" >
+                                <option>All</option>
+                                {months.map((month, index) => {
+                                    return <option key={index}>{month}</option>
+                                })}
+                            </select>
+                        </fieldset>
+                        <fieldset className="fieldset  flex items-center text-[15px]">
+                            <span className="">Year</span>
+                            <select value={selectedYear} onChange={onFilter} className="select w-[100px] year" >
+                                <option>All</option>
+                                {years.map((year, index) => {
+                                    return <option key={index}>{year}</option>
+                                })}
+                            </select>
+                        </fieldset>
+                    </div>
                 </div>
                 {dataTable.length > 0 ? (<table className="table table-xs">
                     <thead>

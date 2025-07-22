@@ -7,6 +7,7 @@ export const HOME_GET_AMOUNT_URL = '/home/amount'
 
 export const INPUT_GET_CATEGORY_URL = '/input/category'
 export const INPUT_POST_TRANSACTION_URL = '/input/transaction'
+export const INPUT_GET_TOP_SPENDING_TRANSACTION_URL = '/input/top-spending-transaction'
 export const INPUT_GET_RECENT_TRANSACTION_URL = '/input/recent-transaction'
 
 

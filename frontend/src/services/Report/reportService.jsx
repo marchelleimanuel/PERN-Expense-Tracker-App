@@ -9,7 +9,6 @@ export const getAllReport = async (id_user, filter) => {
             id_user: id_user,
             years: filter.years ? filter.years : '',
             months: filter.months ? filter.months : '',
-            days: filter.days ? filter.days : '',
             type: filter.type ? filter.type : ''
         }
     });

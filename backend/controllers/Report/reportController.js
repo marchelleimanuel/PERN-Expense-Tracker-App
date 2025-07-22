@@ -9,7 +9,7 @@ import Income from "../../models/Income/incomeModel.js";
 import Expense from "../../models/Expense/expenseModel.js";
 
 export const ReportController = async (req, res) => {
-    const {id_user, years, months, days, type} = req.query;
+    const {id_user, years, months, type} = req.query;
 
     let replacements = {};
     let where = [];
@@ -29,18 +29,12 @@ export const ReportController = async (req, res) => {
         replacements.month = months
     }
 
-    if(days) {
-        where.push(`EXTRACT(DAY FROM tr.date) = :day`);
-        replacements.day = days
-    }
-
     if(type) {
         where.push(`tr.type = :type`);
         replacements.type = type
     }
 
     const whereClause = where.length > 0 ? `where ${where.join(' AND ')}` : '';
-    console.log(whereClause);
 
     const getAllReportData = await db.query(
         `select 

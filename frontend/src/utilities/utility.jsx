@@ -69,3 +69,18 @@ export const formatPercentage = (data) => {
 
     return formatter.format(data);
 }
+
+export const formatDate = (data) => {
+    const formattedDate = data.split('T')[0];
+    const date = new Date(formattedDate);
+    const options = { 
+        weekday: "long",
+        day: 'numeric',   
+        month: 'long',      
+        year: 'numeric'     
+    };
+
+    const result = new Intl.DateTimeFormat("en-US", options);
+
+    return result.format(date);
+}
