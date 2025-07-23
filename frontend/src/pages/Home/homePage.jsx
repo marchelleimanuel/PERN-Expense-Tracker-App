@@ -142,9 +142,9 @@ const Home = () => {
     }
 
     return (
-        <div className="flex">
+        <div>
             <Sidebar/>
-            <div className="w-[87%] p-10 ml-[13%]">
+            <div className="md:w-[87%] p-10 md:ml-[13%] w-full">
                 <h1 className={`text-3xl font-bold`}>Balance: <span className={`font-normal ${totalMoney.toString().startsWith('-') ? 'text-red-500': 'text-black'}`}>{totalMoney}</span></h1>
                 <div className="flex justify-end gap-10 mb-1 ">
                     <fieldset className="fieldset  flex items-center text-[15px]">
@@ -166,19 +166,19 @@ const Home = () => {
                         </select>
                     </fieldset>
                 </div>
-                <div className="flex gap-5">
-                    <div className="bg-white p-6 rounded-lg shadow-md w-[30%] text-center">
+                <div className="flex flex-col lg:flex-nowrap gap-2 md:flex-wrap md:flex-row">
+                    <div className="bg-white p-6 rounded-lg shadow-md md:w-[30%] md:basis-[49%] sm:w-full text-center">
                         <p className="text-xl font-bold">Expense By Category</p>
                         {<ExpensePieChart onDataLoaded={getHighestExpensePercentageByCategory} year={selectedYear} month={selectedMonth}/> }
                         <p>Highest Expense On {<br/>}<span className="font-bold">{dataExpenseWithHighestPercentage.name}</span></p>
                     </div>
-                    <div className="bg-white p-6 rounded-lg shadow-md w-[30%] text-center">
+                    <div className="bg-white p-6 rounded-lg shadow-md md:w-[30%] md:basis-[49%] sm:w-full text-center">
                         <p className="text-xl font-bold">Income By Category</p>
                         <IncomePieChart onDataLoaded={getHighestIncomePercentageByCategory} year={selectedYear} month={selectedMonth}/>
                         <p>Highest Income On {<br/>}<span className="font-bold">{dataIncomeWithHighestPercentage.name}</span></p>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow-md space-y-4 w-[50%]">
+                    <div className="bg-white p-6 rounded-lg shadow-md space-y-4 w-full lg:w-[50%]">
                         <h2 className="text-xl font-bold text-center">Summary</h2>
                         <div>
                             <p className="text-gray-500 font-semibold">Total Income:</p>

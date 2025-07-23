@@ -211,14 +211,14 @@ const Report = () => {
     }
 
     return (
-        <div className="flex">
+        <div>
             <Sidebar/>
-            <div className="w-[87%] p-10 ml-[13%]">
-                <div className="flex justify-between">
-                    <div className="flex">
-                        <button className={`btn btn-success text-white font-bold ${dataTable.length > 0 ? `visible` : `hidden`}`} onClick={onClickExport}>Export to Excel</button>
-                    </div>
-                    <div className="flex justify-end gap-10">
+            <div className="md:w-[87%] md:p-10 md:ml-[13%] w-full p-5">
+                <div className="flex">
+                    <button className={`btn btn-success text-white font-bold ${dataTable.length > 0 ? `visible` : `hidden`}`} onClick={onClickExport}>Export to Excel</button>
+                </div>
+                <div className="flex justify-end">
+                    <div className="flex gap-10">
                         <fieldset className="fieldset flex items-center text-[15px]">
                             <span className="">Type</span>
                             <select value={type} onChange={onFilter} className="select w-[100px] type" >

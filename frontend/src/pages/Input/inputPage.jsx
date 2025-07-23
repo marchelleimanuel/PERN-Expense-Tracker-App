@@ -127,10 +127,10 @@ const Input = () => {
     }
 
     return (
-        <div className="flex"> 
+        <div> 
             <Sidebar/>
-            <div className="w-[87%] p-10 ml-[13%] flex">
-                <div className="input-form border-1 border-black w-[50%]">
+            <div className="md:w-[87%] p-10 md:ml-[13%] flex flex-col lg:flex-row gap-5 w-full">
+                <div className="input-form border-1border-black w-full lg:w-[50%]">
                     <fieldset className="w-1/2 fieldset">
                         <legend className="fieldset-legend">Type</legend>
                         <div>
@@ -171,12 +171,12 @@ const Input = () => {
                         <legend className="fieldset-legend">Notes (Optional)</legend>
                         <textarea className="textarea h-24" placeholder="Notes" value={notes} onChange={onInputNotes}></textarea>
                     </fieldset>
-                    <button className="border-2 border-black btn" onClick={onClickSubmit} disabled={selectedType === '' || selectedCategory === 'Pick a category' || amount === '' || amount === '0' || selectedDate === ''} >Submit</button>
+                    <button className="border-2 btn mt-5 btn-success text-white" onClick={onClickSubmit} disabled={selectedType === '' || selectedCategory === 'Pick a category' || amount === '' || amount === '0' || selectedDate === ''} >Submit</button>
                 </div>
 
-                <div className="recent-transaction border-1 border-black w-[50%]">
+                <div className="recent-transaction w-full lg:w-[50%] space-y-10">
                     <div className="top-spending">
-                        <h2 className="text-gray-700 font-bold text-xl">Top Spending</h2>
+                        <h2 className="text-gray-700 font-bold text-xl text-center">Top Spending</h2>
                         <div className="bg-white p-6 rounded-lg shadow-md">
                             {topSpending.map((data) => {
                                 return <div key={data.name} className="mb-4">
@@ -190,7 +190,7 @@ const Input = () => {
                         </div>
                     </div>
                     <div className="recent-transaction">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between px-5">
                             <h2 className="text-gray-700 font-bold text-xl">Recent Transaction</h2>
                             <p className="underline cursor-pointer" onClick={() => navigate('/report')}>View All</p>
                         </div>
