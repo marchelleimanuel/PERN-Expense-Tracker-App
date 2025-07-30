@@ -29,6 +29,11 @@ try {
 } catch (error) {
     console.log(error);
 }
+
+app.get("/", (req, res) => {
+  res.send("Hello from backend!");
+});
+
 app.listen(port, async () => {
     console.log(`Application is running on ${port}`);
 });
