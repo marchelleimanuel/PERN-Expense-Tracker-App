@@ -14,7 +14,7 @@ const app = express();
 const port = process.env.APP_PORT || 3000;
 
 app.use(cors({
-    origin: ['https://pern-expense-tracker-app.vercel.app/'],
+    origin: ['https://pern-expense-tracker-app.vercel.app'],
     credentials: true
 }));
 app.use(express.json());
