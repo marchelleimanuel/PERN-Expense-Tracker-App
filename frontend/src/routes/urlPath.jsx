@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://localhost:5000';
+export const BASE_URL = 'https://pern-expense-tracker-app-production.up.railway.app';
+// export const BASE_URL = 'http://localhost:5000';
 
 export const REGISTER_URL = '/register';
 export const LOGIN_URL = '/login';
