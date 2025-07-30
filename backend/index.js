@@ -15,6 +15,10 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Hello from backend!");
+});
+
 app.use(router)
 
 
@@ -30,9 +34,7 @@ try {
     console.log(error);
 }
 
-app.get("/", (req, res) => {
-  res.send("Hello from backend!");
-});
+
 
 app.listen(port, async () => {
     console.log(`Application is running on ${port}`);
