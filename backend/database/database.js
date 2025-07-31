@@ -11,7 +11,9 @@ dotenv.config();
 
 // export default db;
 
-const db = new Sequelize(process.env.DATABASE_URL, {
+const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === 'production';
+
+const db = new Sequelize(isProd ? process.env.DATABASE_URL : process.env.DATABASE_URL, {
     dialect: 'postgres',
     logging: false,
     dialectOptions: {
