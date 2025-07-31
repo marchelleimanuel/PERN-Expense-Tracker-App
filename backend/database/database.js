@@ -3,19 +3,24 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === 'production' ? 'Running on production' : 'Running on dev';
-
-const db = new Sequelize(isProd ? process.env.DATABASE_URL : process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    logging: false,
-    // ini di comment aja klo di local
-    // urlPath.jsx juga jangan lupa diubah ke local
-    dialectOptions: {
-        ssl: {
-            require: true,            // 🔐 required on Railway
-            rejectUnauthorized: false // ✅ allow self-signed certs
+let db = null;
+if(process.env.ENV_NAME === 'production') {
+    db = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        logging: false,
+        dialectOptions: {
+            ssl: {
+                require: true,            // 🔐 required on Railway
+                rejectUnauthorized: false // ✅ allow self-signed certs
+            }
         }
-    }
-});
+    });
+}
+else {
+    db = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        logging: false,
+    });
+}
 
 export default db;
