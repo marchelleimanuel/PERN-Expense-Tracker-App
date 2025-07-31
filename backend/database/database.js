@@ -12,17 +12,14 @@ dotenv.config();
 // export default db;
 
 const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === "production";
-console.log('bener kok ', isProd);
+    // Use a connection URL directly for the pool configuration
+const connectionString = process.env.DATABASE_URL; 
 
-const db = new Sequelize(
-  isProd ? process.env.DB_PROD_NAME : process.env.DB_NAME,
-  isProd ? process.env.DB_PROD_USER : process.env.DB_USER,
-  isProd ? process.env.DB_PROD_PASSWORD : process.env.DB_PASSWORD,
-  {
-    host: isProd ? process.env.DB_PROD_HOST : process.env.DB_HOST,
-    dialect: "postgres",
-    logging: false,
-  }
-);
+const db = new Pool({
+    connectionString: connectionString,
+    // Optional: Add other pool configuration options like max, idleTimeoutMillis, etc.
+    // max: 20, // maximum number of clients in the pool
+    // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+});
 
 export default db;
