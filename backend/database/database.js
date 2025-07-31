@@ -11,15 +11,19 @@ dotenv.config();
 
 // export default db;
 
-const db = new Sequelize(process.env.DATABASE_URL, {
+const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === "production";
+
+const db = new Sequelize(
+  isProd ? process.env.DB_PROD_NAME : process.env.DB_NAME,
+  isProd ? process.env.DB_PROD_USER : process.env.DB_USER,
+  isProd ? process.env.DB_PROD_PASSWORD : process.env.DB_PASSWORD,
+  {
+    host: isProd ? process.env.DB_PROD_HOST : process.env.DB_HOST,
+    port: 5432,
     dialect: "postgres",
     logging: false,
-    dialectOptions: {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false, // For self-signed SSL certs (Railway uses SSL)
-        },
-    },
-});
+  }
+);
+
 
 export default db;
