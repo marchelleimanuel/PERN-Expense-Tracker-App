@@ -12,7 +12,7 @@ dotenv.config();
 // export default db;
 
 const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === "production";
-console.log(isProd);
+console.log('bener kok ', isProd);
 
 const db = new Sequelize(
   isProd ? process.env.DB_PROD_NAME : process.env.DB_NAME,
