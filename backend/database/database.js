@@ -11,15 +11,15 @@ dotenv.config();
 
 // export default db;
 
-const isProd = process.env.RAILWAY_ENVIRONMENT_NAME === "production";
-    // Use a connection URL directly for the pool configuration
-const connectionString = process.env.DATABASE_URL; 
-
-const db = new Pool({
-    connectionString: connectionString,
-    // Optional: Add other pool configuration options like max, idleTimeoutMillis, etc.
-    // max: 20, // maximum number of clients in the pool
-    // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+const db = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    logging: false,
+    dialectOptions: {
+        ssl: {
+            require: true,            // 🔐 required on Railway
+            rejectUnauthorized: false // ✅ allow self-signed certs
+        }
+    }
 });
 
 export default db;
