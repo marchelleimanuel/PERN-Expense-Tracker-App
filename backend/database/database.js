@@ -20,7 +20,6 @@ const db = new Sequelize(
   isProd ? process.env.DB_PROD_PASSWORD : process.env.DB_PASSWORD,
   {
     host: isProd ? process.env.DB_PROD_HOST : process.env.DB_HOST,
-    port: 5432,
     dialect: "postgres",
     logging: false,
   }
